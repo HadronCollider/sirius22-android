@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Sirius project</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="TODO_title">Выбор проекта</string>
+    <string name="older">Предыдущие проеты</string>
+    <string name="new_project">Новый проект</string>
+    <string name="label">Имя проекта</string>
+    <string name="input">Введите название проекта</string>
+    <string name="low_quality">низкое качество</string>
+    <string name="middle_quality">среднее качество</string>
+    <string name="high_quality">высокое качество</string>
+    <string name="new_project_button">создать проект</string>
+</resources>
