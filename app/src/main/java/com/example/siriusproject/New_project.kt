@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.view.View.OnTouchListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import androidx.core.widget.doBeforeTextChanged
 
 class New_project : AppCompatActivity() {
 
@@ -38,14 +34,26 @@ class New_project : AppCompatActivity() {
         qualityButton.setText(R.string.high_quality)
         radioGroup.addView(qualityButton)
 
+        val projectName = findViewById<EditText>(R.id.input)
+
         val projectActivity = Intent(this, project::class.java)
 
         val createProject = findViewById<Button>(R.id.create_project)
         createProject.setOnClickListener {
-            var chosenButton = radioGroup.checkedRadioButtonId
-            if (chosenButton == -1)
+            if (projectName.text.toString() == "") {
+                val toast = Toast.makeText(applicationContext, R.string.wrong_name, Toast.LENGTH_SHORT)
+                toast.show()
                 return@setOnClickListener
+            }
+            val chosenButton = radioGroup.checkedRadioButtonId
+            if (chosenButton == -1) {
+                val toast = Toast.makeText(applicationContext, R.string.wrong_quality, Toast.LENGTH_SHORT)
+                toast.show()
+                return@setOnClickListener
+            }
+
             savedInstanceState?.putString("Quality", radioGroup.checkedRadioButtonId.toString())
+            savedInstanceState?.putString("Name", projectName.text.toString())
             startActivity(projectActivity)
         }
     }

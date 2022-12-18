@@ -13,4 +13,6 @@
     <string name="middle_quality">среднее качество</string>
     <string name="high_quality">высокое качество</string>
     <string name="new_project_button">создать проект</string>
+    <string name="wrong_name">введите имя</string>
+    <string name="wrong_quality">выберите качество</string>
 </resources>
