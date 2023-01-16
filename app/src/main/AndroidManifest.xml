@@ -13,7 +13,7 @@
         android:theme="@style/Theme.SiriusProject"
         tools:targetApi="31">
         <activity
-            android:name=".project"
+            android:name=".Project"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

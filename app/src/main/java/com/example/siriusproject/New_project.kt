@@ -36,7 +36,7 @@ class New_project : AppCompatActivity() {
 
         val projectName = findViewById<EditText>(R.id.input)
 
-        val projectActivity = Intent(this, project::class.java)
+        val projectActivity = Intent(this, Project::class.java)
 
         val createProject = findViewById<Button>(R.id.create_project)
         createProject.setOnClickListener {
