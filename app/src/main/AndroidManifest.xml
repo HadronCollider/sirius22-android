@@ -27,7 +27,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".New_project"
+            android:name=".NewProject"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
