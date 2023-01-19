@@ -11,16 +11,15 @@
         android:id="@+id/older"
         android:layout_width="326dp"
         android:layout_height="24dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="56dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="56dp"
         android:layout_marginTop="10dp"
-        android:text="@string/older"
-        android:textAppearance="@style/older"
         android:fontFeatureSettings="pnum, lnum"
-        android:lineSpacingExtra="8sp"
         android:gravity="center_vertical"
-        />
+        android:lineSpacingExtra="8sp"
+        android:text="@string/older"
+        android:textAppearance="@style/older" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,12 +27,11 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_alignParentEnd="true"
-
         android:layout_alignParentBottom="true"
+
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-
-
         android:background="@drawable/dark">
 
         <Button
@@ -68,98 +66,21 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/icons_color"
+            android:background="@drawable/plus_icon"
             tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TableLayout
-        android:id="@+id/folder_labe"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folder_label"
         android:layout_width="320dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="25dp"
-        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="120dp"
-        android:clipToOutline="true"
-    >
-
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="320dp"
-
-    >
-
-    <View
-        android:id="@+id/ellipse"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/ellipse"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-    </View>
-
-    <View
-        android:id="@+id/folder"
-
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/folder"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/project_1"
-        android:layout_width="43dp"
-        android:layout_height="24dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-
-        android:layout_marginTop="3dp"
-        android:fontFeatureSettings="pnum, lnum"
-        android:gravity="top"
-        android:lineSpacingExtra="5sp"
-        android:text="asdasd"
-        android:textAppearance="@style/project_1"
-        android:translationY="-2.62sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.18"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </TableRow>
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
+        tools:ignore="AdapterViewChildren" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
