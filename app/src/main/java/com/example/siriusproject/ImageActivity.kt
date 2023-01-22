@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 
-class Image : AppCompatActivity() {
+class ImageActivity : AppCompatActivity() {
 
     private val keyToPath = "path"
 
