@@ -12,10 +12,10 @@ import java.io.IOException
 @SuppressLint("ViewConstructor")
 class CameraPreview(
     context: Context,
-    private var mCamera: Camera,
+    private val mCamera: Camera,
 ) : SurfaceView(context), SurfaceHolder.Callback {
 
-    private val TAG = "Camera"
+    private val TAG = "CameraPreview"
 
     private val mHolder: SurfaceHolder = holder.apply {
         addCallback(this@CameraPreview)

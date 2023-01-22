@@ -6,7 +6,7 @@ import android.hardware.Camera;
 import android.widget.FrameLayout
 import java.io.IOException
 
-class Camera : Activity() {
+class CameraActivity : Activity() {
 
     private var mCamera: Camera? = null
     private var mPreview: CameraPreview? = null
@@ -25,12 +25,11 @@ class Camera : Activity() {
             preview.addView(it)
         }
     }
-}
-
-private fun getCameraInstance(): Camera? {
-    return try {
-        Camera.open()
-    } catch (e: IOException) {
-        null
+    private fun getCameraInstance(): Camera? {
+        return try {
+            Camera.open()
+        } catch (e: IOException) {
+            null
+        }
     }
 }
