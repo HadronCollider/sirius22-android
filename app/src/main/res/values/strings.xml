@@ -15,4 +15,5 @@
     <string name="new_project_button">создать проект</string>
     <string name="wrong_name">введите имя</string>
     <string name="wrong_quality">выберите качество</string>
+    <string name="capture">Capture</string>
 </resources>
