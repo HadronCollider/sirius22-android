@@ -22,14 +22,27 @@
         android:textAppearance="@style/older" />
 
 
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folder_label"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="120dp"
+        tools:ignore="AdapterViewChildren" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-
         android:layout_gravity="end|bottom"
+
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/dark">
@@ -70,17 +83,6 @@
             tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/folder_label"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="120dp"
-        tools:ignore="AdapterViewChildren" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
