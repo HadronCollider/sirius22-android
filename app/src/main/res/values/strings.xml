@@ -17,4 +17,5 @@
     <string name="wrong_quality">выберите качество</string>
     <string name="tab_model">модель</string>
     <string name="tab_images">изображения</string>
+    <string name="capture">Capture</string>
 </resources>
