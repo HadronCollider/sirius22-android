@@ -39,7 +39,7 @@ class ProjectActivity : AppCompatActivity() {
                     ft.replace(R.id.tabs, fragment)
                 }
                 else -> {
-                    val fragment = ModelFragment()
+                    val fragment = ImagesFragment()
                     ft.replace(R.id.tabs, fragment)
                 }
             }
