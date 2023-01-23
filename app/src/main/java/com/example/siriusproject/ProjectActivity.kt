@@ -8,7 +8,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class Project : AppCompatActivity() {
+class ProjectActivity : AppCompatActivity() {
 
     private lateinit var adapter: FragmentAdapter
     private lateinit var viewPager: ViewPager2
