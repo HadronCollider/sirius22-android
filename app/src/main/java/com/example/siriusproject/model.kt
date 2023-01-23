@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 
 
-class Model : Fragment() {
+class ModelFragment : Fragment() {
 
 
     override fun onCreateView(

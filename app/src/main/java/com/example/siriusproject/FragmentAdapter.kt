@@ -14,10 +14,10 @@ class FragmentAdapter(fragment: FragmentActivity) : FragmentStateAdapter(fragmen
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> {
-                Model()
+                ModelFragment()
             }
             else -> {
-                Images()
+                ImagesFragment()
             }
         }
 

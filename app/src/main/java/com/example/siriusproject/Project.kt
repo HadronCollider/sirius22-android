@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+
 class Project : AppCompatActivity() {
 
     private lateinit var adapter: FragmentAdapter
@@ -34,17 +35,14 @@ class Project : AppCompatActivity() {
             tab.text = tabNames[position]
             when (position) {
                 0 -> {
-                    val fragment = Model()
+                    val fragment = ModelFragment()
                     ft.replace(R.id.tabs, fragment)
                 }
                 else -> {
-                    val fragment = Model()
+                    val fragment = ModelFragment()
                     ft.replace(R.id.tabs, fragment)
                 }
             }
         }.attach()
-
-
     }
-
 }
