@@ -32,17 +32,18 @@ class CameraPreview(
             }
         }
     }
+
     override fun surfaceDestroyed(holder: SurfaceHolder) {
 
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, w: Int, h: Int) {
-        if(mHolder.surface == null) {
+        if (mHolder.surface == null) {
             return
         }
         try {
             mCamera.stopPreview()
-        } catch(_: IOException) {
+        } catch (_: IOException) {
         }
         mCamera.apply {
             try {
