@@ -8,19 +8,21 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.databinding.ActivityNewProjectBinding
+import com.example.siriusproject.databinding.ToolbarActivityNewProjectBinding
 
 class NewProject : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityNewProjectBinding
-
+    private lateinit var toolbarBinding: ToolbarActivityNewProjectBinding
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityNewProjectBinding.inflate(layoutInflater)
+        toolbarBinding = ToolbarActivityNewProjectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.setCustomView(R.layout.toolbar_activity_new_project)
+        supportActionBar?.customView = toolbarBinding.root
 
         var qualityButton = RadioButton(this)
         qualityButton.setText(R.string.low_quality)
@@ -49,13 +51,17 @@ class NewProject : AppCompatActivity() {
                 toast.show()
                 return@setOnClickListener
             }
-
-            savedInstanceState?.putString(
+            projectActivity.putExtra(
                 "Quality",
                 viewBinding.radioButtons.checkedRadioButtonId.toString()
             )
-            savedInstanceState?.putString("Name", viewBinding.input.text.toString())
+            projectActivity.putExtra("Name", viewBinding.input.text.toString())
             startActivity(projectActivity)
+        }
+        val mainActivity = Intent(this, MainActivity::class.java)
+        toolbarBinding.arrowBackNewProject.setOnClickListener {
+
+            startActivity(mainActivity)
         }
     }
 }
