@@ -26,14 +26,14 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/folder_label"
+        android:id="@+id/project_list"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="80dp"
         tools:ignore="AdapterViewChildren" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

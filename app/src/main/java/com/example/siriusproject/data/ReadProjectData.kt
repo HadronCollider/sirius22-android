@@ -6,10 +6,10 @@ import com.google.gson.Gson
 import java.io.*
 
 
-class ReadProjectData(path: File) {
+class ReadProjectData(path: File) {                         // путь к файлам проекта
     private val fileName = "projects.json"
     private val pathToDirectory = path.absolutePath + "/"
-    lateinit var allProjectsData: List<ProjectData>
+    var allProjectsData: List<ProjectData> = emptyList()
 
     init {
         try {
