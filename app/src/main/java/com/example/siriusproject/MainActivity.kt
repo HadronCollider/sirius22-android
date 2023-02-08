@@ -5,8 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.siriusproject.data.ProjectAdapter
-import com.example.siriusproject.data.ReadProjectData
+import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityMainBinding
 
 
@@ -14,6 +13,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var adapter: ProjectAdapter
+    private val projectService: ProjectService
+        get() = (applicationContext as App).projectService
+    private val listener: ProjectListener = { adapter.data = it }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +30,19 @@ class MainActivity : AppCompatActivity() {
         }
         val projectsData = ReadProjectData(this.filesDir)
 
-
         val manager = LinearLayoutManager(this)
-        adapter = ProjectAdapter()
+        adapter = ProjectAdapter(object : ProjectActionListener {
+            override fun onProjectGetId(project: ProjectData) {
+                val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
+                startActivity(projectActivity)
+            }
+        })
         adapter.data = projectsData.allProjectsData
+
+        projectService.addListener(listener)
+
+
         viewBinding.projectList.layoutManager = manager
         viewBinding.projectList.adapter = adapter
-
     }
 }
