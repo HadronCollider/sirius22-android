@@ -31,7 +31,18 @@ class ProjectActivity : AppCompatActivity() {
             if (allData.allProjectsData.isNotEmpty()) {
                 id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
             }
+        } else {
+            id = arguments!!.getInt(R.string.id_type.toString())
+            for (i in allData.allProjectsData) {
+                if (i.id == id) {
+                    name = i.name
+                    quality = i.quality
+                    date = i.date
+                    break;
+                }
+            }
         }
+
     }
 
     override fun onPause() {
