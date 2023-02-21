@@ -4,6 +4,7 @@ package com.example.siriusproject.data
 import android.util.Log
 import com.google.gson.Gson
 import java.io.*
+import java.util.Date
 
 
 class ReadProjectData(path: File) {
@@ -34,6 +35,9 @@ class ReadProjectData(path: File) {
 
     fun writeData(information: ProjectData) {
         allProjectsData = allProjectsData.plus(information)
+    }
+    fun writeData(id: Int, name: String, quality: Byte, data: Date) {
+        allProjectsData = allProjectsData.plus(ProjectData(id, name, quality, data))
     }
 
     fun writeAllDataToFile() {
