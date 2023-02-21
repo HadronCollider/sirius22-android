@@ -36,13 +36,11 @@ class ReadProjectData(path: File) {
         allProjectsData = allProjectsData.plus(information)
     }
 
-    @Override
-    fun finalize() {
+    fun writeAllDataToFile() {
         val gson = Gson()
         val fileWrite = FileWriter(pathToDirectory + fileName)
         val jsonData = gson.toJson(allProjectsData)
         fileWrite.write(jsonData)
         fileWrite.close()
     }
-
 }

@@ -14,6 +14,7 @@ class ProjectActivity : AppCompatActivity() {
     private var name = ""
     private var quality: Byte = 0
     private lateinit var date: Date
+    private lateinit var allData:ReadProjectData
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +23,7 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
         val arguments = intent.extras
-        val allData = ReadProjectData(this.filesDir)
+        allData = ReadProjectData(this.filesDir)
         if (arguments?.getBoolean(R.string.type_type.toString()) == false) {
             name = arguments.getString(R.string.name_type.toString()).toString()
             quality = arguments.getByte(R.string.quality_type.toString())
@@ -36,14 +37,17 @@ class ProjectActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         date = Calendar.getInstance().time
+        allData.writeAllDataToFile()
     }
 
     override fun onStop() {
         super.onStop()
         date = Calendar.getInstance().time
+        allData.writeAllDataToFile()
     }
     override fun onDestroy() {
         super.onDestroy()
         date = Calendar.getInstance().time
+        allData.writeAllDataToFile()
     }
 }
