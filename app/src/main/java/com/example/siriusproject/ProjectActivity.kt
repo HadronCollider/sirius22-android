@@ -4,16 +4,14 @@ package com.example.siriusproject
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
+import com.example.siriusproject.data.ProjectData
 import com.example.siriusproject.data.ReadProjectData
 import java.util.Calendar
 import java.util.Date
 
 class ProjectActivity : AppCompatActivity() {
 
-    private var id = 1
-    private var name = ""
-    private var quality: Byte = 0
-    private lateinit var date: Date
+    private lateinit var data: ProjectData
     private lateinit var allData:ReadProjectData
 
 
@@ -24,20 +22,21 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
+        data.id = 1
         if (arguments?.getBoolean(R.string.type_type.toString()) == false) {
-            name = arguments.getString(R.string.name_type.toString()).toString()
-            quality = arguments.getByte(R.string.quality_type.toString())
-            date = Calendar.getInstance().time
+            data.name = arguments.getString(R.string.name_type.toString()).toString()
+            data.quality = arguments.getByte(R.string.quality_type.toString())
+            data.date = Calendar.getInstance().time
             if (allData.allProjectsData.isNotEmpty()) {
-                id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
+                data.id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
             }
         } else {
-            id = arguments!!.getInt(R.string.id_type.toString())
+            data.id = arguments!!.getInt(R.string.id_type.toString())
             for (i in allData.allProjectsData) {
-                if (i.id == id) {
-                    name = i.name
-                    quality = i.quality
-                    date = i.date
+                if (i.id == data.id) {
+                    data.name = i.name
+                    data.quality = i.quality
+                    data.date = i.date
                     break;
                 }
             }
@@ -47,18 +46,18 @@ class ProjectActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        date = Calendar.getInstance().time
+        data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
 
     override fun onStop() {
         super.onStop()
-        date = Calendar.getInstance().time
+        data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
     override fun onDestroy() {
         super.onDestroy()
-        date = Calendar.getInstance().time
+        data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
 }
