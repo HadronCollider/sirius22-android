@@ -4,24 +4,33 @@ package com.example.siriusproject
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.data.ProjectData
 import com.example.siriusproject.data.ReadProjectData
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.Calendar
-import java.util.Date
 
 class ProjectActivity : AppCompatActivity() {
 
-    private lateinit var data: ProjectData
+    private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
     private lateinit var allData:ReadProjectData
-
+    private lateinit var dirOfThisProject: String
     private var galleryRequest = 1
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
@@ -33,9 +42,9 @@ class ProjectActivity : AppCompatActivity() {
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
         }
+
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
-        data.id = 1
         if (arguments?.getBoolean(R.string.type_type.toString()) == false) {
             data.name = arguments.getString(R.string.name_type.toString()).toString()
             data.quality = arguments.getByte(R.string.quality_type.toString())
@@ -50,12 +59,18 @@ class ProjectActivity : AppCompatActivity() {
                     data.name = i.name
                     data.quality = i.quality
                     data.date = i.date
-                    break;
                 }
             }
         }
-    }
+        dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
+        try {
+            Files.createDirectory(Paths.get(dirOfThisProject))
+        } catch(e: IOException) {
+            Log.d("files", "can't make a new directory")
+        }
 
+
+    }
 
     override fun onPause() {
         super.onPause()
@@ -73,17 +88,22 @@ class ProjectActivity : AppCompatActivity() {
         data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         var bitmap: Bitmap? = null
-        var imageView:ImageView = findViewById(R.id.imagePreview)
+        val imageView:ImageView = findViewById(R.id.imagePreview)
         when(requestCode) {
             galleryRequest -> {
                 if (resultCode == RESULT_OK) {
-                    var selectedImage: Uri? = data?.data
+                    val selectedImage: Uri? = data?.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
+                        val file = File(dirOfThisProject, "aaa.png")
+                        val os = BufferedOutputStream(FileOutputStream(file))
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, os)
+                        os.close()
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
