@@ -54,8 +54,9 @@ class NewProject : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            savedInstanceState?.putString("Quality", radioGroup.checkedRadioButtonId.toString())
-            savedInstanceState?.putString("Name", projectName.text.toString())
+            savedInstanceState?.putString(R.string.quality_type.toString(), radioGroup.checkedRadioButtonId.toString())
+            savedInstanceState?.putString(R.string.name_type.toString(), projectName.text.toString())
+            projectActivity.putExtra(R.string.type_type.toString(), false)                     // false - новый проект, true - старыый
             startActivity(projectActivity)
         }
     }
