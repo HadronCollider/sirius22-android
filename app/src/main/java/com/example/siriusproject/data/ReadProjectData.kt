@@ -34,10 +34,10 @@ class ReadProjectData(path: File) {
     }
 
     fun writeData(information: ProjectData) {
-        allProjectsData.plus(information)
+        allProjectsData.add(information)
     }
     fun writeData(id: Int, name: String, quality: Short, data: Date) {
-        allProjectsData.plus(ProjectData(id, name, quality, data))
+        allProjectsData.add(ProjectData(id, name, quality, data))
     }
 
     fun writeAllDataToFile() {
