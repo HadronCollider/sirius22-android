@@ -7,7 +7,6 @@ import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.data.ProjectData
 import com.example.siriusproject.data.ReadProjectData
 import java.util.Calendar
-import java.util.Date
 
 class ProjectActivity : AppCompatActivity() {
 
@@ -23,9 +22,9 @@ class ProjectActivity : AppCompatActivity() {
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
         data.id = 1
-        if (arguments?.getBoolean(R.string.type_type.toString()) == false) {
+        if (arguments?.getString(R.string.type_type.toString())== R.string.new_project_made.toString()) {
             data.name = arguments.getString(R.string.name_type.toString()).toString()
-            data.quality = arguments.getByte(R.string.quality_type.toString())
+            data.quality = arguments.getShort(R.string.quality_type.toString())
             data.date = Calendar.getInstance().time
             if (allData.allProjectsData.isNotEmpty()) {
                 data.id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
@@ -37,7 +36,6 @@ class ProjectActivity : AppCompatActivity() {
                     data.name = i.name
                     data.quality = i.quality
                     data.date = i.date
-                    break;
                 }
             }
         }
@@ -46,17 +44,6 @@ class ProjectActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        data.date = Calendar.getInstance().time
-        allData.writeAllDataToFile()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        data.date = Calendar.getInstance().time
-        allData.writeAllDataToFile()
-    }
-    override fun onDestroy() {
-        super.onDestroy()
         data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }

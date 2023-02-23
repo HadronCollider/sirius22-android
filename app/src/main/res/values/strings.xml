@@ -22,4 +22,6 @@
     <string name="name_type">Name</string>
     <string name="quality_type">Quality</string>
     <string name="id_type">id</string>
+    <string name="new_project_made">new</string>
+    <string name="old_project">old</string>
 </resources>
