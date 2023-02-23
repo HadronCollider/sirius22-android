@@ -30,6 +30,8 @@ class ProjectActivity : AppCompatActivity() {
     private lateinit var dirOfThisProject: String
     private var galleryRequest = 1
 
+    private val qualityOfImages = 90            // используется при сохранении изображения от 0 до 100
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,8 +70,6 @@ class ProjectActivity : AppCompatActivity() {
         } catch(e: IOException) {
             Log.d("files", "can't make a new directory")
         }
-
-
     }
 
     override fun onPause() {
@@ -100,9 +100,10 @@ class ProjectActivity : AppCompatActivity() {
                     val selectedImage: Uri? = data?.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
-                        val file = File(dirOfThisProject, "aaa.png")
+                        val file = File(dirOfThisProject, Calendar.getInstance().time.toString()
+                                + Calendar.getInstance().timeInMillis.toString() + ".jpeg")
                         val os = BufferedOutputStream(FileOutputStream(file))
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, os)
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
                     } catch (e: IOException) {
                         e.printStackTrace()
