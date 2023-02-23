@@ -10,7 +10,7 @@ import java.util.Calendar
 
 class ProjectActivity : AppCompatActivity() {
 
-    private lateinit var data: ProjectData
+    private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
     private lateinit var allData:ReadProjectData
 
 
@@ -21,11 +21,9 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
-        data.id = 1
         if (arguments?.getString(R.string.type_type.toString())== R.string.new_project_made.toString()) {
             data.name = arguments.getString(R.string.name_type.toString()).toString()
             data.quality = arguments.getShort(R.string.quality_type.toString())
-            data.date = Calendar.getInstance().time
             if (allData.allProjectsData.isNotEmpty()) {
                 data.id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
             }
@@ -35,7 +33,6 @@ class ProjectActivity : AppCompatActivity() {
                 if (i.id == data.id) {
                     data.name = i.name
                     data.quality = i.quality
-                    data.date = i.date
                 }
             }
         }
