@@ -20,6 +20,7 @@ class ReadProjectData(path: File) {
             }
             val fileRead = FileReader(fileR.path)
             val allText = fileRead.readText()
+            allProjectsData = mutableListOf()
             if (allText.isNotEmpty()) {
                 allProjectsData =
                     Gson().fromJson(allText, Array<ProjectData>::class.java).toMutableList()
