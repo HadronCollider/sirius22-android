@@ -10,7 +10,7 @@ import java.util.Date
 class ReadProjectData(path: File) {
     private val fileName = "projects.json"
     private val pathToDirectory = path.absolutePath + "/"
-    lateinit var allProjectsData: MutableList<ProjectData>
+    private lateinit var allProjectsData: MutableList<ProjectData>
 
     init {
         try {
@@ -34,9 +34,25 @@ class ReadProjectData(path: File) {
         }
     }
 
+    fun getData(id: Int): ProjectData? {
+        for (i in allProjectsData) {
+            if (i.id == id) {
+                return i
+            }
+        }
+        return null
+    }
+
+    fun getLastId(): Int {
+        return if (allProjectsData.isNotEmpty())
+            allProjectsData[allProjectsData.size - 1].id + 1
+        else 1
+    }
+
     fun writeData(information: ProjectData) {
         allProjectsData.add(information)
     }
+
     fun writeData(id: Int, name: String, quality: Short, data: Date) {
         allProjectsData.add(ProjectData(id, name, quality, data))
     }

@@ -3,6 +3,7 @@ package com.example.siriusproject
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.data.ProjectData
 import com.example.siriusproject.data.ReadProjectData
@@ -11,7 +12,7 @@ import java.util.Calendar
 class ProjectActivity : AppCompatActivity() {
 
     private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
-    private lateinit var allData:ReadProjectData
+    private lateinit var allData: ReadProjectData
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,22 +22,25 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
-        if (arguments?.getString(R.string.type_type.toString())== R.string.new_project_made.toString()) {
-            data.name = arguments.getString(R.string.name_type.toString()).toString()
-            data.quality = arguments.getShort(R.string.quality_type.toString())
-            if (allData.allProjectsData.isNotEmpty()) {
-                data.id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
-            }
+        if (arguments?.getString(R.string.type_type.toString()) == R.string.new_project_made.toString()) {
+            writeNewData(arguments)
         } else {
-            data.id = arguments!!.getInt(R.string.id_type.toString())
-            for (i in allData.allProjectsData) {
-                if (i.id == data.id) {
-                    data.name = i.name
-                    data.quality = i.quality
-                }
+            val id = arguments!!.getInt(R.string.id_type.toString())
+            val returnData = allData.getData(id)
+            if (returnData != null) {
+                data = returnData
+            } else {
+                Toast.makeText(this, "Error! Can't find the project", Toast.LENGTH_SHORT).show()
+                writeNewData(arguments)
             }
         }
+    }
 
+    private fun writeNewData(arguments: Bundle) {
+        data.name = arguments.getString(R.string.name_type.toString()).toString()
+        data.quality = arguments.getShort(R.string.quality_type.toString())
+        data.id = allData.getLastId()
+        allData.writeData(data)
     }
 
     override fun onPause() {
