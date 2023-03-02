@@ -45,7 +45,7 @@ class ReadProjectData(path: File) {
 
     fun getLastId(): Int {
         return if (allProjectsData.isNotEmpty())
-            allProjectsData[allProjectsData.size - 1].id + 1
+            allProjectsData.last().id + 1
         else 1
     }
 

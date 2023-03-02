@@ -54,9 +54,10 @@ class NewProject : AppCompatActivity() {
                 return@setOnClickListener
             }
             //следующие две строки по-сути ничего не делают, это было исправлено в другой ветке.
-            savedInstanceState?.putString(R.string.quality_type.toString(), radioGroup.checkedRadioButtonId.toString())
-            savedInstanceState?.putString(R.string.name_type.toString(), projectName.text.toString())
-            projectActivity.putExtra(R.string.type_type.toString(), R.string.new_project_made)
+            savedInstanceState?.putString(this.getString(R.string.quality_type), radioGroup.checkedRadioButtonId.toString())
+            savedInstanceState?.putString(this.getString(R.string.name_type), projectName.text.toString())
+            savedInstanceState?.putString(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
+            projectActivity.putExtra(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
             startActivity(projectActivity)
         }
     }

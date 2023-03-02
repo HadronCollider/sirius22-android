@@ -22,7 +22,7 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
-        if (arguments?.getString(R.string.type_type.toString()) == R.string.new_project_made.toString()) {
+        if (arguments?.getString(this.getString(R.string.type_type)) == this.getString(R.string.new_project_made)) {
             writeNewData(arguments)
         } else {
             val id = arguments!!.getInt(R.string.id_type.toString())
