@@ -10,7 +10,7 @@ data class ProjectData(
 
     @SerializedName("name") var name: String,                       // имя проекта, папка с содержимым проекта назвается также
 
-    @SerializedName("Quality") var quality: Byte,                   // качество модели, (можно изменять в процессе разработки)
+    @SerializedName("Quality") var quality: Short,                   // качество модели, (можно изменять в процессе разработки)
 
     @SerializedName("date") var date: Date                          // дата последего изменения проекта
 )

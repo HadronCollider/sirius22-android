@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
@@ -22,8 +23,10 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.Calendar
+import java.util.Date
 
 class ProjectActivity : AppCompatActivity() {
+
 
     private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
     private lateinit var allData:ReadProjectData
@@ -47,21 +50,16 @@ class ProjectActivity : AppCompatActivity() {
 
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
-        if (arguments?.getBoolean(R.string.type_type.toString()) == false) {
-            data.name = arguments.getString(R.string.name_type.toString()).toString()
-            data.quality = arguments.getByte(R.string.quality_type.toString())
-            data.date = Calendar.getInstance().time
-            if (allData.allProjectsData.isNotEmpty()) {
-                data.id = allData.allProjectsData[(allData.allProjectsData.size - 1)].id + 1
-            }
+        if (arguments?.getString(this.getString(R.string.type_type)) == this.getString(R.string.new_project_made)) {
+            writeNewData(arguments)
         } else {
-            data.id = arguments!!.getInt(R.string.id_type.toString())
-            for (i in allData.allProjectsData) {
-                if (i.id == data.id) {
-                    data.name = i.name
-                    data.quality = i.quality
-                    data.date = i.date
-                }
+            val id = arguments!!.getInt(R.string.id_type.toString())
+            val returnData = allData.getData(id)
+            if (returnData != null) {
+                data = returnData
+            } else {
+                Toast.makeText(this, "Error! Can't find the project", Toast.LENGTH_SHORT).show()
+                writeNewData(arguments)
             }
         }
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
@@ -70,6 +68,13 @@ class ProjectActivity : AppCompatActivity() {
         } catch(e: IOException) {
             Log.d("files", "can't make a new directory")
         }
+    }
+
+    private fun writeNewData(arguments: Bundle) {
+        data.name = arguments.getString(R.string.name_type.toString()).toString()
+        data.quality = arguments.getShort(R.string.quality_type.toString())
+        data.id = allData.getLastId()
+        allData.writeData(data)
     }
 
     override fun onPause() {

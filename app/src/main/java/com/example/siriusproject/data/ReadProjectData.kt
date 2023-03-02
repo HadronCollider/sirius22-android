@@ -10,7 +10,7 @@ import java.util.Date
 class ReadProjectData(path: File) {
     private val fileName = "projects.json"
     private val pathToDirectory = path.absolutePath + "/"
-    lateinit var allProjectsData: List<ProjectData>
+    private lateinit var allProjectsData: MutableList<ProjectData>
 
     init {
         try {
@@ -20,9 +20,10 @@ class ReadProjectData(path: File) {
             }
             val fileRead = FileReader(fileR.path)
             val allText = fileRead.readText()
+            allProjectsData = mutableListOf()
             if (allText.isNotEmpty()) {
                 allProjectsData =
-                    Gson().fromJson(allText, Array<ProjectData>::class.java).toList()
+                    Gson().fromJson(allText, Array<ProjectData>::class.java).toMutableList()
                 if (allProjectsData.isNotEmpty())
                     Log.d("json file", allProjectsData.toString())
                 else
@@ -33,11 +34,27 @@ class ReadProjectData(path: File) {
         }
     }
 
-    fun writeData(information: ProjectData) {
-        allProjectsData = allProjectsData.plus(information)
+    fun getData(id: Int): ProjectData? {
+        for (i in allProjectsData) {
+            if (i.id == id) {
+                return i
+            }
+        }
+        return null
     }
-    fun writeData(id: Int, name: String, quality: Byte, data: Date) {
-        allProjectsData = allProjectsData.plus(ProjectData(id, name, quality, data))
+
+    fun getLastId(): Int {
+        return if (allProjectsData.isNotEmpty())
+            allProjectsData.last().id + 1
+        else 1
+    }
+
+    fun writeData(information: ProjectData) {
+        allProjectsData.add(information)
+    }
+
+    fun writeData(id: Int, name: String, quality: Short, data: Date) {
+        allProjectsData.add(ProjectData(id, name, quality, data))
     }
 
     fun writeAllDataToFile() {
