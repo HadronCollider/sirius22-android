@@ -48,4 +48,10 @@ class ProjectActivity : AppCompatActivity() {
         data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        data.date = Calendar.getInstance().time
+        allData.writeAllDataToFile()
+    }
 }
