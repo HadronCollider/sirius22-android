@@ -13,8 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var adapter: ProjectAdapter
-    private val projectService: ProjectService
-        get() = (applicationContext as App).projectService
     private val listener: ProjectListener = { adapter.data = it }
 
 
@@ -38,10 +36,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         adapter.data = projectsData.allProjectsData
-
-        projectService.addListener(listener)
-
-
+        adapter.addListener(listener)
         viewBinding.projectList.layoutManager = manager
         viewBinding.projectList.adapter = adapter
     }

@@ -1,7 +1,7 @@
 package com.example.siriusproject.data
 
 
-typealias ProjectListener = (project: List<ProjectData>) -> Unit
+
 
 class ProjectService() {
 

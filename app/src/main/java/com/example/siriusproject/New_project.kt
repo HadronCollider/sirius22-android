@@ -58,10 +58,8 @@ class NewProject : AppCompatActivity() {
             projectActivity.putExtra("Name", viewBinding.input.text.toString())
             startActivity(projectActivity)
         }
-        val mainActivity = Intent(this, MainActivity::class.java)
         toolbarBinding.arrowBackNewProject.setOnClickListener {
-
-            startActivity(mainActivity)
+            this.finish()
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.siriusproject
 
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
@@ -22,8 +21,7 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.customView = toolbarBinding.root
 
         toolbarBinding.backButton.setOnClickListener {
-            val mainActivity = Intent(this, MainActivity::class.java)
-            startActivity(mainActivity)
+            this.finish()
         }
         val arguments = intent.extras
         val projectName = arguments?.getString("Name").toString()

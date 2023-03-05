@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.siriusproject.databinding.OneProjectBinding
 
+typealias ProjectListener = (project: List<ProjectData>) -> Unit
+
 class ProjectAdapter(private val projectActionListener: ProjectActionListener) :
     RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>(), View.OnClickListener {
     var data: List<ProjectData> = emptyList()
@@ -16,7 +18,21 @@ class ProjectAdapter(private val projectActionListener: ProjectActionListener) :
             notifyDataSetChanged()
         }
 
+    var listeners = mutableListOf<ProjectListener>()
+
     override fun getItemCount(): Int = data.size
+
+    fun addListener(listener: ProjectListener) {
+        listeners.add(listener)
+        listener.invoke(data)
+    }
+
+    fun removeListener(listener: ProjectListener) {
+        listeners.remove(listener)
+        listener.invoke(data)
+    }
+
+    private fun notifyChanges() = listeners.forEach { it.invoke(data) }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
         val inflater = LayoutInflater.from(parent.context)
