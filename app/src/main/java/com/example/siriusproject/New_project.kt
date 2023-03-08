@@ -53,9 +53,11 @@ class NewProject : AppCompatActivity() {
                 toast.show()
                 return@setOnClickListener
             }
-
-            savedInstanceState?.putString("Quality", radioGroup.checkedRadioButtonId.toString())
-            savedInstanceState?.putString("Name", projectName.text.toString())
+            //следующие две строки по-сути ничего не делают, это было исправлено в другой ветке.
+            savedInstanceState?.putString(this.getString(R.string.quality_type), radioGroup.checkedRadioButtonId.toString())
+            savedInstanceState?.putString(this.getString(R.string.name_type), projectName.text.toString())
+            savedInstanceState?.putString(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
+            projectActivity.putExtra(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
             startActivity(projectActivity)
         }
     }
