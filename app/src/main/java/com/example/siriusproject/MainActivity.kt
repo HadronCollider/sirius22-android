@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityMainBinding
 
@@ -25,9 +24,9 @@ class MainActivity : AppCompatActivity() {
         viewBinding.newProject.setOnClickListener {
             startActivity(newProjectActivity)
         }
+
         val projectsData = ReadProjectData(this.filesDir)
 
-        val manager = LinearLayoutManager(this)
         adapter = ProjectAdapter(object : ProjectActionListener {
             override fun projectClicked(project: ProjectData) {
                 val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
         adapter.data = projectsData.allProjectsData
-        viewBinding.projectList.layoutManager = manager
         viewBinding.projectList.adapter = adapter
     }
 }

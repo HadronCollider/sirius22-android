@@ -34,7 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="25dp"
         android:layout_marginTop="80dp"
-        tools:ignore="AdapterViewChildren" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
