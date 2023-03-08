@@ -18,4 +18,10 @@
     <string name="tab_model">модель</string>
     <string name="tab_images">Фотографии</string>
     <string name="capture">Capture</string>
+    <string name="type_type">type</string>
+    <string name="name_type">Name</string>
+    <string name="quality_type">Quality</string>
+    <string name="id_type">id</string>
+    <string name="new_project_made">new</string>
+    <string name="old_project">old</string>
 </resources>

@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.databinding.ActivityNewProjectBinding
@@ -56,6 +59,7 @@ class NewProject : AppCompatActivity() {
                 viewBinding.radioButtons.checkedRadioButtonId.toString()
             )
             projectActivity.putExtra("Name", viewBinding.input.text.toString())
+            projectActivity.putExtra(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
             startActivity(projectActivity)
         }
         toolbarBinding.arrowBackNewProject.setOnClickListener {
