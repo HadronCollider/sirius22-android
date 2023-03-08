@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var adapter: ProjectAdapter
-    private val listener: ProjectListener = { adapter.data = it }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,13 +29,12 @@ class MainActivity : AppCompatActivity() {
 
         val manager = LinearLayoutManager(this)
         adapter = ProjectAdapter(object : ProjectActionListener {
-            override fun onProjectGetId(project: ProjectData) {
+            override fun projectClicked(project: ProjectData) {
                 val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
                 startActivity(projectActivity)
             }
         })
         adapter.data = projectsData.allProjectsData
-        adapter.addListener(listener)
         viewBinding.projectList.layoutManager = manager
         viewBinding.projectList.adapter = adapter
     }

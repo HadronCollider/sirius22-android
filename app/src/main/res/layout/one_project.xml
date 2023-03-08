@@ -1,64 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/ellipse"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="691dp"
-        android:background="@drawable/ellipse"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/project_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <View
-        android:layout_width="23dp"
-        android:layout_height="23dp"
-        android:background="@drawable/folder"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="9dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/project_name"
+    <RelativeLayout
+        android:id="@+id/project"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="56dp"
-        android:fontFeatureSettings="pnum, lnum"
-        android:gravity="top"
-        android:lineSpacingExtra="5sp"
-        android:textAppearance="@style/project_1"
-        android:translationY="-2.62sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
 
-    <TextView
-        android:id="@+id/date_last_changed"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="56dp"
-        android:fontFeatureSettings="pnum, lnum"
-        android:gravity="top"
-        android:lineSpacingExtra="4sp"
-        android:textAppearance="@style/project_date"
-        android:translationY="-1.8sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <View
+            android:id="@+id/ellipse"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="691dp"
+            android:background="@drawable/ellipse"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/project_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/folder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/project_name"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="56dp"
+            android:fontFeatureSettings="pnum, lnum"
+            android:gravity="top"
+            android:lineSpacingExtra="5sp"
+            android:textAppearance="@style/project_1"
+            android:translationY="-2.62sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/date_last_changed"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="24dp"
+            android:fontFeatureSettings="pnum, lnum"
+            android:gravity="top"
+            android:lineSpacingExtra="4sp"
+            android:textAppearance="@style/project_date"
+            android:translationY="-1.8sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
