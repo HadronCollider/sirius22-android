@@ -30,10 +30,11 @@ class MainActivity : AppCompatActivity() {
         adapter = ProjectAdapter(object : ProjectActionListener {
             override fun projectClicked(project: ProjectData) {
                 val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
+                projectActivity.putExtra(getString(R.string.id_type), project.id)
                 startActivity(projectActivity)
             }
         })
-        adapter.data = projectsData.allProjectsData
+        adapter.data = projectsData.getAllData()
         viewBinding.projectList.adapter = adapter
     }
 }

@@ -64,4 +64,6 @@ class ReadProjectData(path: File) {
         fileWrite.write(jsonData)
         fileWrite.close()
     }
+
+    fun getAllData() = allProjectsData
 }

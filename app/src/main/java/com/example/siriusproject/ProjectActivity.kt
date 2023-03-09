@@ -26,13 +26,15 @@ class ProjectActivity : AppCompatActivity() {
         setContentView(R.layout.activity_project)
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.customView = toolbarBinding.root
-        supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
+        toolbarBinding.backButton.setOnClickListener {
+            this@ProjectActivity.finish()
+        }
         val arguments = intent.extras
         allData = ReadProjectData(this.filesDir)
         if (arguments?.getString(this.getString(R.string.type_type)) == this.getString(R.string.new_project_made)) {
             writeNewData(arguments)
         } else {
-            val id = arguments!!.getInt(R.string.id_type.toString())
+            val id = arguments!!.getInt(getString(R.string.id_type))
             val returnData = allData.getData(id)
             if (returnData != null) {
                 data = returnData
@@ -41,6 +43,8 @@ class ProjectActivity : AppCompatActivity() {
                 writeNewData(arguments)
             }
         }
+        toolbarBinding.pageTitle.text = data.name
+
     }
 
     private fun writeNewData(arguments: Bundle) {
@@ -50,12 +54,7 @@ class ProjectActivity : AppCompatActivity() {
         allData.writeData(data)
     }
 
-        toolbarBinding.backButton.setOnClickListener {
-            this.finish()
-        }
-        val arguments = intent.extras
-        val projectName = arguments?.getString("Name").toString()
-        toolbarBinding.pageTitle.text = projectName
+
     override fun onPause() {
         super.onPause()
         data.date = Calendar.getInstance().time
