@@ -27,7 +27,6 @@ import java.util.Date
 
 class ProjectActivity : AppCompatActivity() {
 
-
     private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
     private lateinit var allData:ReadProjectData
     private lateinit var dirOfThisProject: String
