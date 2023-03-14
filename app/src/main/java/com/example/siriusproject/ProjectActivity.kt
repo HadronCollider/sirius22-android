@@ -27,6 +27,7 @@ class ProjectActivity : AppCompatActivity() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.customView = toolbarBinding.root
         toolbarBinding.backButton.setOnClickListener {
+
             this@ProjectActivity.finish()
         }
         val arguments = intent.extras
@@ -48,7 +49,7 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     private fun writeNewData(arguments: Bundle) {
-        data.name = arguments.getString(R.string.name_type.toString()).toString()
+        data.name = arguments.getString(this.getString(R.string.name_type)).toString()
         data.quality = arguments.getShort(R.string.quality_type.toString())
         data.id = allData.getLastId()
         allData.writeData(data)
