@@ -23,7 +23,6 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.Calendar
-import java.util.Date
 
 class ProjectActivity : AppCompatActivity() {
 
@@ -104,8 +103,7 @@ class ProjectActivity : AppCompatActivity() {
                     val selectedImage: Uri? = data?.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
-                        val file = File(dirOfThisProject, Calendar.getInstance().time.toString()
-                                + Calendar.getInstance().timeInMillis.toString() + ".jpeg")
+                        val file = File(dirOfThisProject, Calendar.getInstance().timeInMillis.toString() + ".jpeg")
                         val os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
