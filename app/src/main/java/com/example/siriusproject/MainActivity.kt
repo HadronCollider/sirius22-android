@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         adapter = ProjectAdapter(object : ProjectActionListener {
             override fun onProjectClick(project: ProjectData) {
                 val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
-                projectActivity.putExtra(getString(R.string.id_type), project.id)
+                projectActivity.putExtra(this@MainActivity.getString(R.string.id_type), project.id)
                 startActivity(projectActivity)
             }
 

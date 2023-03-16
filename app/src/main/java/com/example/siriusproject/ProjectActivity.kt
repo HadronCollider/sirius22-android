@@ -1,6 +1,10 @@
 package com.example.siriusproject
 
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -57,7 +61,7 @@ class ProjectActivity : AppCompatActivity() {
         if (arguments?.getString(this.getString(R.string.type_type)) == this.getString(R.string.new_project_made)) {
             writeNewData(arguments)
         } else {
-            val id = arguments!!.getInt(R.string.id_type.toString())
+            val id = arguments!!.getInt(this.getString(R.string.id_type))
             val returnData = allData.getData(id)
             if (returnData != null) {
                 data = returnData
