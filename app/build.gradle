@@ -7,6 +7,10 @@ android {
     namespace 'com.example.siriusproject'
     compileSdk 33
 
+    buildFeatures {
+        viewBinding true
+    }
+
     defaultConfig {
         applicationId "com.example.siriusproject"
         minSdk 21

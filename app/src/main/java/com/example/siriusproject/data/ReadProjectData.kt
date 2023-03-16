@@ -57,6 +57,16 @@ class ReadProjectData(path: File) {
         allProjectsData.add(ProjectData(id, name, quality, data))
     }
 
+    fun removeProject(id: Int) : Boolean {
+        for (i in allProjectsData) {
+            if (i.id == id) {
+                allProjectsData.remove(i)
+                return true
+            }
+        }
+        return false
+    }
+
     fun writeAllDataToFile() {
         val gson = Gson()
         val fileWrite = FileWriter(pathToDirectory + fileName)
@@ -64,4 +74,6 @@ class ReadProjectData(path: File) {
         fileWrite.write(jsonData)
         fileWrite.close()
     }
+
+    fun getAllData() = allProjectsData
 }

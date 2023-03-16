@@ -14,6 +14,8 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import com.example.siriusproject.databinding.ActivityProjectBinding
+import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import com.example.siriusproject.data.ProjectData
 import com.example.siriusproject.data.ReadProjectData
 import java.io.BufferedOutputStream
@@ -26,6 +28,8 @@ import java.util.Calendar
 
 class ProjectActivity : AppCompatActivity() {
 
+    private lateinit var viewBinding: ActivityProjectBinding
+    private lateinit var toolbarBinding: ToolbarActivityProjectBinding
     private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
     private lateinit var allData:ReadProjectData
     private lateinit var dirOfThisProject: String
@@ -36,9 +40,15 @@ class ProjectActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewBinding = ActivityProjectBinding.inflate(layoutInflater)
+        toolbarBinding = ToolbarActivityProjectBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_project)
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.setCustomView(R.layout.toolbar_activity_project)
+        supportActionBar?.customView = toolbarBinding.root
+        toolbarBinding.backButton.setOnClickListener {
+
+            this@ProjectActivity.finish()
+        }
         val addImage = findViewById<Button>(R.id.add_images)
         addImage.setOnClickListener {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
@@ -51,7 +61,7 @@ class ProjectActivity : AppCompatActivity() {
         if (arguments?.getString(this.getString(R.string.type_type)) == this.getString(R.string.new_project_made)) {
             writeNewData(arguments)
         } else {
-            val id = arguments!!.getInt(R.string.id_type.toString())
+            val id = arguments!!.getInt(this.getString(R.string.id_type))
             val returnData = allData.getData(id)
             if (returnData != null) {
                 data = returnData
@@ -69,7 +79,7 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     private fun writeNewData(arguments: Bundle) {
-        data.name = arguments.getString(R.string.name_type.toString()).toString()
+        data.name = arguments.getString(this.getString(R.string.name_type)).toString()
         data.quality = arguments.getShort(R.string.quality_type.toString())
         data.id = allData.getLastId()
         allData.writeData(data)
