@@ -15,6 +15,8 @@ class NewProject : AppCompatActivity() {
     private lateinit var viewBinding: ActivityNewProjectBinding
     private lateinit var toolbarBinding: ToolbarActivityNewProjectBinding
 
+    private val START_FOR_RESULT = 1
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +59,7 @@ class NewProject : AppCompatActivity() {
             )
             projectActivity.putExtra(this.getString(R.string.name_type), viewBinding.input.text.toString())
             projectActivity.putExtra(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
-            startActivityForResult(projectActivity, 1)
+            startActivityForResult(projectActivity, START_FOR_RESULT)
         }
         toolbarBinding.arrowBackNewProject.setOnClickListener {
             this.finish()
