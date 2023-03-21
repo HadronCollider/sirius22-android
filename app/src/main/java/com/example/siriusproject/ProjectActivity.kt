@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.core.net.toUri
 import com.example.siriusproject.databinding.ActivityProjectBinding
 import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import com.example.siriusproject.data.ProjectData
@@ -31,9 +32,10 @@ class ProjectActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityProjectBinding
     private lateinit var toolbarBinding: ToolbarActivityProjectBinding
     private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
-    private lateinit var allData:ReadProjectData
+    private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
     private var galleryRequest = 1
+    private var allImages: MutableList<Uri> = mutableListOf()
 
     private val qualityOfImages = 90            // используется при сохранении изображения от 0 до 100
 
@@ -73,9 +75,12 @@ class ProjectActivity : AppCompatActivity() {
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
         try {
             Files.createDirectory(Paths.get(dirOfThisProject))
-        } catch(e: IOException) {
+        } catch (e: IOException) {
             Log.d("files", "can't make a new directory")
         }
+        getAllImages()
+
+
     }
 
     private fun writeNewData(arguments: Bundle) {
@@ -96,24 +101,29 @@ class ProjectActivity : AppCompatActivity() {
         data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         data.date = Calendar.getInstance().time
         allData.writeAllDataToFile()
     }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         var bitmap: Bitmap? = null
-        val imageView:ImageView = findViewById(R.id.imagePreview)
-        when(requestCode) {
+        val imageView: ImageView = findViewById(R.id.imagePreview)
+        when (requestCode) {
             galleryRequest -> {
                 if (resultCode == RESULT_OK) {
                     val selectedImage: Uri? = data?.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
-                        val file = File(dirOfThisProject, Calendar.getInstance().timeInMillis.toString() + ".jpeg")
+                        val file = File(
+                            dirOfThisProject,
+                            Calendar.getInstance().timeInMillis.toString() + ".jpeg"
+                        )
                         val os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
@@ -123,6 +133,15 @@ class ProjectActivity : AppCompatActivity() {
                     imageView.setImageBitmap(bitmap)
                 }
             }
+        }
+    }
+
+    private fun getAllImages() {
+        val dir =
+            object {}.javaClass.getResource(dirOfThisProject)?.file?.let { File(it) } ?: return
+        dir.walk().forEach {
+            val fileUri = it.toUri()
+            allImages.add(fileUri)
         }
     }
 }
