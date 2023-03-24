@@ -87,7 +87,7 @@ class ProjectActivity : AppCompatActivity() {
         adapter = ImageAdapter(object : ActionListener {
             override fun onClicked(image: Uri) {
                 val imageActivity = Intent(this@ProjectActivity, ImageActivity::class.java)
-                imageActivity.putExtra(this@ProjectActivity.getString(R.string.image_data), image)
+                imageActivity.putExtra(this@ProjectActivity.getString(R.string.image_data), image.path)
                 startActivity(imageActivity)
             }
 
