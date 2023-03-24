@@ -1,8 +1,8 @@
 package com.example.siriusproject
 
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.siriusproject.databinding.ActivityImageBinding
 
 class ImageActivity : AppCompatActivity() {

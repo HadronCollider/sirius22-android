@@ -3,30 +3,32 @@ package com.example.siriusproject
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.data.ActionListener
 import com.example.siriusproject.data.ImageAdapter
-import com.example.siriusproject.databinding.ActivityProjectBinding
-import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import com.example.siriusproject.data.ProjectData
 import com.example.siriusproject.data.ReadProjectData
+import com.example.siriusproject.databinding.ActivityProjectBinding
+import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.Calendar
+import java.util.*
 
 class ProjectActivity : AppCompatActivity() {
 
@@ -87,14 +89,16 @@ class ProjectActivity : AppCompatActivity() {
         adapter = ImageAdapter(object : ActionListener {
             override fun onClicked(image: Uri) {
                 val imageActivity = Intent(this@ProjectActivity, ImageActivity::class.java)
-                imageActivity.putExtra(this@ProjectActivity.getString(R.string.image_data), image.path)
+                imageActivity.putExtra(
+                    this@ProjectActivity.getString(R.string.image_data), image.path
+                )
                 startActivity(imageActivity)
             }
 
             override fun onRemove(image: Uri) {
-                val file = File(image.path)
-                val result = file.delete()
-                if (result) {
+                val file = image.path?.let { File(it) }
+                val result = file?.delete()
+                if (result == true) {
                     Toast.makeText(
                         this@ProjectActivity,
                         this@ProjectActivity.getString(R.string.delete_s),
@@ -150,7 +154,7 @@ class ProjectActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        var bitmap: Bitmap? = null
+        var bitmap: Bitmap?
 
         when (requestCode) {
             galleryRequest -> {
@@ -158,14 +162,15 @@ class ProjectActivity : AppCompatActivity() {
                     val selectedImage: Uri? = data?.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
+                        bitmap = rotateImage(bitmap, selectedImage)
                         val imageName = Calendar.getInstance().timeInMillis.toString() + ".jpeg"
                         val file = File(
-                            dirOfThisProject,
-                            imageName
+                            dirOfThisProject, imageName
                         )
                         val os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
+
                         if (selectedImage != null) {
                             allImages.add(file.toUri())
                             adapter.data = allImages
@@ -185,5 +190,25 @@ class ProjectActivity : AppCompatActivity() {
             allImages.add(it.toUri())
         }
         allImages.removeAt(0)
+    }
+
+    //поворот изображения
+    private fun rotateImage(bitmap: Bitmap, selectedImage: Uri?): Bitmap {
+        val imagePfd = selectedImage?.let { contentResolver.openFileDescriptor(it, "r") }
+        val exif = imagePfd?.let { ExifInterface(it.fileDescriptor) }
+        val orientation = exif?.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
+        )
+        val rotate = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            else -> 0
+        }
+        val matrix = Matrix()
+        matrix.postRotate(rotate.toFloat())
+        return Bitmap.createBitmap(
+            bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
+        )
     }
 }
