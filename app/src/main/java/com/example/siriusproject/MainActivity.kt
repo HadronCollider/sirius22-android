@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 adapter.data = projectsData.getAllData()
             }
-
+            // данные функции испльзуются для другого списка
             override fun onClicked(image: Uri) {}
             override fun onRemove(image: Uri) {}
         })

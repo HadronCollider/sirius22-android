@@ -24,4 +24,7 @@
     <string name="id_type">id</string>
     <string name="new_project_made">new</string>
     <string name="old_project">old</string>
+    <string name="image_data">image</string>
+    <string name="delete_s">deleted successfully</string>
+    <string name="delete_f">can\'t find the image</string>
 </resources>

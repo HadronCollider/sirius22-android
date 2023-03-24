@@ -43,7 +43,7 @@ class ProjectAdapter(private val projectActionListener: ActionListener) :
                 projectActionListener.onRemove(project)
             }
         }
-    }
+         }
 
     override fun onClick(view: View) {
         val project: ProjectData = view.tag as ProjectData

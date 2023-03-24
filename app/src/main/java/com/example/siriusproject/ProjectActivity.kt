@@ -11,10 +11,11 @@ import android.widget.Toast
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.core.net.toUri
+import com.example.siriusproject.data.ActionListener
+import com.example.siriusproject.data.ImageAdapter
 import com.example.siriusproject.databinding.ActivityProjectBinding
 import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import com.example.siriusproject.data.ProjectData
@@ -36,19 +37,20 @@ class ProjectActivity : AppCompatActivity() {
     private lateinit var dirOfThisProject: String
     private var galleryRequest = 1
     private var allImages: MutableList<Uri> = mutableListOf()
+    private lateinit var adapter: ImageAdapter
 
-    private val qualityOfImages = 90            // используется при сохранении изображения от 0 до 100
+    private val qualityOfImages =
+        90            // используется при сохранении изображения от 0 до 100
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityProjectBinding.inflate(layoutInflater)
         toolbarBinding = ToolbarActivityProjectBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_project)
+        setContentView(viewBinding.root)
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.customView = toolbarBinding.root
         toolbarBinding.backButton.setOnClickListener {
-
             this@ProjectActivity.finish()
         }
         val addImage = findViewById<Button>(R.id.add_images)
@@ -56,6 +58,8 @@ class ProjectActivity : AppCompatActivity() {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
+
+
         }
 
         val arguments = intent.extras
@@ -80,7 +84,41 @@ class ProjectActivity : AppCompatActivity() {
         }
         getAllImages()
 
+        adapter = ImageAdapter(object : ActionListener {
+            override fun onClicked(image: Uri) {
+                val imageActivity = Intent(this@ProjectActivity, ImageActivity::class.java)
+                imageActivity.putExtra(this@ProjectActivity.getString(R.string.image_data), image)
+                startActivity(imageActivity)
+            }
 
+            override fun onRemove(image: Uri) {
+                val file = File(image.path)
+                val result = file.delete()
+                if (result) {
+                    Toast.makeText(
+                        this@ProjectActivity,
+                        this@ProjectActivity.getString(R.string.delete_s),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    allImages.remove(image)
+                    adapter.data = allImages
+                } else {
+                    Toast.makeText(
+                        this@ProjectActivity,
+                        this@ProjectActivity.getString(R.string.delete_f),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+
+            // данные функции используются для другого списка
+            override fun onClicked(project: ProjectData) {}
+            override fun onRemove(project: ProjectData) {}
+        })
+
+        adapter.data = allImages
+        viewBinding.imageList.adapter = adapter
     }
 
     private fun writeNewData(arguments: Bundle) {
@@ -113,35 +151,39 @@ class ProjectActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         var bitmap: Bitmap? = null
-        val imageView: ImageView = findViewById(R.id.imagePreview)
+
         when (requestCode) {
             galleryRequest -> {
                 if (resultCode == RESULT_OK) {
                     val selectedImage: Uri? = data?.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
+                        val imageName = Calendar.getInstance().timeInMillis.toString() + ".jpeg"
                         val file = File(
                             dirOfThisProject,
-                            Calendar.getInstance().timeInMillis.toString() + ".jpeg"
+                            imageName
                         )
                         val os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
+                        if (selectedImage != null) {
+                            allImages.add(file.toUri())
+                            adapter.data = allImages
+
+                        }
+                        viewBinding.imageList.adapter = adapter
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
-                    imageView.setImageBitmap(bitmap)
                 }
             }
         }
     }
 
     private fun getAllImages() {
-        val dir =
-            object {}.javaClass.getResource(dirOfThisProject)?.file?.let { File(it) } ?: return
-        dir.walk().forEach {
-            val fileUri = it.toUri()
-            allImages.add(fileUri)
+        File("/$dirOfThisProject").walk().forEach {
+            allImages.add(it.toUri())
         }
+        allImages.removeAt(0)
     }
 }
