@@ -1,6 +1,5 @@
 package com.example.siriusproject
 
-
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -38,6 +37,7 @@ class ProjectActivity : AppCompatActivity() {
     private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
     private var galleryRequest = 1
+
     private var allImages: MutableList<Uri> = mutableListOf()
     private lateinit var adapter: ImageAdapter
 
