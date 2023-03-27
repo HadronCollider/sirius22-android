@@ -32,11 +32,5 @@ class ImageActivity : AppCompatActivity() {
         toolbarBinding.imageName.text = imageName
     }
 
-    fun getName(path: String): String {
-        var name = ""
-        for (i in path.length - 1 downTo 0) if (path[i] != '/') {
-            name = path[i] + name
-        } else break
-        return name
-    }
+    private fun getName(path: String): String = path.takeLastWhile { it != '/' }
 }
