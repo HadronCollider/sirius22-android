@@ -18,6 +18,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -33,10 +34,12 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
+    private lateinit var allFilesDir: String
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        allFilesDir = this.filesDir.toString()
         viewBinding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
@@ -63,9 +66,10 @@ class CameraActivity : AppCompatActivity() {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
             }
         }
+        val imageName = Calendar.getInstance().timeInMillis.toString() + ".jpeg"
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             contentResolver,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            File(allFilesDir, imageName).toUri(),
             contentValues
         ).build()
         imageCapture.takePicture(
