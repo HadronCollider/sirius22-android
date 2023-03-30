@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.siriusproject.databinding.OneImageBinding
 import java.io.File
 
-class ImageAdapter(private val imageActionListener: ActionListener) :
+class ImageAdapter(private val imageActionListener: ImageActionListener) :
     RecyclerView.Adapter<ImageAdapter.ImageViewHolder>(), View.OnClickListener {
 
     var data: List<Uri> = emptyList()
@@ -36,8 +36,10 @@ class ImageAdapter(private val imageActionListener: ActionListener) :
 
 
         with(holder.binding) {
-            val image = File(imageUri.path)
-            imageName.text = image.name
+            val image = imageUri.path?.let { File(it) }
+            if (image != null) {
+                imageName.text = image.name
+            }
             val imageBitmap =  BitmapFactory.decodeFile(imageUri.path)
             holder.binding.imagePreview.setImageBitmap(imageBitmap)
             holder.binding.image.tag = imageUri

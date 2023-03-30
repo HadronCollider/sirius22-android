@@ -1,7 +1,6 @@
 package com.example.siriusproject
 
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(newProjectActivity)
         }
         projectsData = ReadProjectData(this.filesDir)
-        adapter = ProjectAdapter(object : ActionListener {
+        adapter = ProjectAdapter(object : ProjectActionListener {
             override fun onClicked(project: ProjectData) {
                 val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
                 projectActivity.putExtra(this@MainActivity.getString(R.string.id_type), project.id)
@@ -44,9 +43,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 adapter.data = projectsData.getAllData()
             }
-            // данные функции испльзуются для другого списка
-            override fun onClicked(image: Uri) {}
-            override fun onRemove(image: Uri) {}
         })
         adapter.data = projectsData.getAllData()
         viewBinding.projectList.adapter = adapter

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.siriusproject.databinding.OneProjectBinding
 
-class ProjectAdapter(private val projectActionListener: ActionListener) :
+class ProjectAdapter(private val projectActionListener: ProjectActionListener) :
     RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>(), View.OnClickListener {
     var data: List<ProjectData> = emptyList()
         @SuppressLint("NotifyDataSetChanged")

@@ -15,10 +15,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
-import com.example.siriusproject.data.ActionListener
-import com.example.siriusproject.data.ImageAdapter
-import com.example.siriusproject.data.ProjectData
-import com.example.siriusproject.data.ReadProjectData
+import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
 import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import java.io.BufferedOutputStream
@@ -86,7 +83,7 @@ class ProjectActivity : AppCompatActivity() {
         }
         getAllImages()
 
-        adapter = ImageAdapter(object : ActionListener {
+        adapter = ImageAdapter(object : ImageActionListener {
             override fun onClicked(image: Uri) {
                 val imageActivity = Intent(this@ProjectActivity, ImageActivity::class.java)
                 imageActivity.putExtra(
@@ -115,10 +112,6 @@ class ProjectActivity : AppCompatActivity() {
                 }
 
             }
-
-            // данные функции используются для другого списка
-            override fun onClicked(project: ProjectData) {}
-            override fun onRemove(project: ProjectData) {}
         })
 
         adapter.data = allImages
