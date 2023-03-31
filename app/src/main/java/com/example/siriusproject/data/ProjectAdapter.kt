@@ -37,17 +37,17 @@ class ProjectAdapter(private val projectActionListener: ProjectActionListener) :
             holder.binding.dateLastChanged.tag = project
             holder.binding.ellipse.tag = project
             holder.binding.project.setOnClickListener {
-                projectActionListener.onProjectClick(project)
+                projectActionListener.onClicked(project)
             }
             holder.binding.deleteProject.setOnClickListener {
-                projectActionListener.onRemoveProject(project)
+                projectActionListener.onRemove(project)
             }
         }
-    }
+         }
 
     override fun onClick(view: View) {
         val project: ProjectData = view.tag as ProjectData
-        projectActionListener.onProjectClick(project)
+        projectActionListener.onClicked(project)
     }
 
 

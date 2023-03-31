@@ -27,16 +27,19 @@ class MainActivity : AppCompatActivity() {
         }
         projectsData = ReadProjectData(this.filesDir)
         adapter = ProjectAdapter(object : ProjectActionListener {
-            override fun onProjectClick(project: ProjectData) {
+            override fun onClicked(project: ProjectData) {
                 val projectActivity = Intent(this@MainActivity, ProjectActivity::class.java)
                 projectActivity.putExtra(this@MainActivity.getString(R.string.id_type), project.id)
                 startActivity(projectActivity)
             }
-
-            override fun onRemoveProject(project: ProjectData) {
+            override fun onRemove(project: ProjectData) {
                 val result = projectsData.removeProject(project.id)
                 if (!result) {
-                    Toast.makeText(this@MainActivity, "Error, can't find the project", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error, can't find the project",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 adapter.data = projectsData.getAllData()
             }

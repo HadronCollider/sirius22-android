@@ -1,6 +1,7 @@
 package com.example.siriusproject.data
 
+
 interface ProjectActionListener {
-    fun onProjectClick(project: ProjectData)
-    fun onRemoveProject(project: ProjectData)
+    fun onClicked(project: ProjectData)
+    fun onRemove(project: ProjectData)
 }
