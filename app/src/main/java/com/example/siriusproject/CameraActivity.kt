@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.OrientationEventListener
-import android.view.Surface
 import android.view.Surface.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -31,8 +30,6 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-typealias LumaListener = (luma: Double) -> Unit
-
 class CameraActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityCameraBinding
@@ -40,7 +37,6 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
-    private lateinit var imageAnalyzer: ImageAnalysis
     private val qualityOfImages =
         90            // используется при сохранении изображения от 0 до 100
 
@@ -53,7 +49,7 @@ class CameraActivity : AppCompatActivity() {
                     in 45 until 135 -> ROTATION_270
                     in 135 until 225 -> ROTATION_180
                     in 225 until 315 -> ROTATION_90
-                    else -> Surface.ROTATION_0
+                    else -> ROTATION_0
                 }
                 //Toast.makeText(this@CameraActivity, rotation.toString(), Toast.LENGTH_SHORT).show()
                 imageCapture?.targetRotation = rotation
@@ -110,7 +106,6 @@ class CameraActivity : AppCompatActivity() {
             })
     }
 
-
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
@@ -121,18 +116,12 @@ class CameraActivity : AppCompatActivity() {
 
             imageCapture = ImageCapture.Builder().build()
 
-            imageAnalyzer = ImageAnalysis.Builder().build().also {
-                it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
-                    Log.d(TAG, "Average luminosity: $luma")
-                })
-            }
-
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture, imageAnalyzer
+                    this, cameraSelector, preview, imageCapture
                 )
 
             } catch (exc: Exception) {
