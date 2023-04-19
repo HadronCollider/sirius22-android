@@ -61,6 +61,7 @@ class ProjectActivity : AppCompatActivity() {
 
         val cameraActivity = Intent(this, CameraActivity::class.java)
         viewBinding.openCamera.setOnClickListener {
+            cameraActivity.putExtra(this.getString(R.string.path_to_dir), dirOfThisProject)
             startActivity(cameraActivity)
         }
 

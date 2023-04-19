@@ -61,9 +61,11 @@ class CameraActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        allFilesDir = this.filesDir.toString()
         viewBinding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
+        val arguments = intent.extras
+        allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
 
         if (allPermissionsGranted()) {
             startCamera()
