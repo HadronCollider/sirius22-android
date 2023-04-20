@@ -114,9 +114,9 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     Button buttonConfigure;
     Button buttonSave;
     Button buttonOpen;
-    Button buttonReset;
-    Button buttonPausePlay;
-    Button buttonLoadImgs;
+    Button buttonReset; // Сбрасывает ранее полученные изображения со сторонней камеры
+    Button buttonPausePlay; // Запускает работу сторонней камеры
+    Button buttonLoadImgs; // Загружает изображения из проекта
     StereoDisparityDialog dialogDisparity = new StereoDisparityDialog();
 
     // If image collection should reset and start over
@@ -152,8 +152,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     LookUpCameraInfo dbCams = new LookUpCameraInfo();
     final List<String> imageFiles = new ArrayList<>();
     final LookUpImageFilesByIndex imageLookup = new LookUpImageFilesByIndex(imageFiles,
-//            (path, image) -> ConvertBitmap.bitmapToBoof(BitmapFactory.decodeFile(path), image, null));
-            (path, image) -> ConvertBitmap.bitmapToBoof( // TODO: Доработать конвертацию для случая с большими изображениями
+            (path, image) -> ConvertBitmap.bitmapToBoof(
                     Bitmap.createScaledBitmap(
                             BitmapFactory.decodeFile(path),
                             cameraWidth,
@@ -192,7 +191,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
     // Workspace where the current reconstruction has files saved to
     File workingDir = new File(".");
-    private String projectDir = "";
+    private String projectDir = ""; // Директория проекта
 
     public MultiViewStereoActivity() {
         super(Resolution.R640x480);
@@ -226,7 +225,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         super.onCreate(savedInstanceState);
         Log.i(TAG, "ENTER onCreate()");
 
-        projectDir = getIntent().getStringExtra("project_path");
+        projectDir = getIntent().getStringExtra("project_path"); // Получаем директорию проекта
 
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout controls = (LinearLayout) inflater.inflate(R.layout.multi_view_stereo_controls, null);
@@ -373,10 +372,10 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     public void loadImgsPressed(View view) {
-        loadImgsImpl();
+        loadImgsImpl(); // Загружаем снимки из проекта в память активности
     }
     public void pausePlayPressed(View view) {
-        paused = !paused;
+        paused = !paused; // Ставим получение снимков из сторонней камеры на паузу
     }
 
     protected void load(File directory) {
@@ -701,6 +700,8 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             paintWarningBG.setStrokeWidth(3 * displayMetrics.density);
         }
 
+        // Загружает изображения из директории проекта
+        // TODO: Проверить загрузку нужных изображений
         public void loadImgs() {
             buttonPausePlay.setEnabled(false);
             shouldLoadImages = true;
@@ -737,7 +738,6 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                 });
                 shouldLoadImages = false;
             }).start();
-
         }
 
         @Override
@@ -892,7 +892,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                         }
                         dbCams.addView(imageFiles.size() + "", 0);
 
-                        File dest = new File(workingDir, String.format(
+                        File dest = new File(workingDir, String.format( //сохраняем изображения, сделанные сторонней камерой, в наш проект (шаблон: i.jpg, где i - номер снимка)
                                 Locale.getDefault(), "%d.jpg",
                                 imageFiles.size()+1));
                         try {
@@ -958,7 +958,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
      * Create the working directory for MVS
      */
     public File createMvsWorkDirectory() {
-        File savePath = new File(projectDir, "mvs_work/");
+        File savePath = new File(projectDir, "mvs_work/"); // файлы сторонней камеры сохраняем в эту папку
 
         if (savePath.exists()) {
             // If it already exists, it's from an old run and we can delete it

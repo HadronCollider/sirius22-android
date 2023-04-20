@@ -21,7 +21,6 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -95,9 +94,6 @@ public class DemoMain extends AppCompatActivity implements ExpandableListView.On
 
         listView.setAdapter(expListAdapter);
         listView.setOnChildClickListener(this);
-
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
     }
 
     @Override
