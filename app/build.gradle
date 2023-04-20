@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.siriusproject"
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -39,7 +39,12 @@ android {
     }
 }
 
+def acraVersion = '5.7.0'
+
 dependencies {
+    implementation "ch.acra:acra-http:$acraVersion"
+    implementation "ch.acra:acra-toast:$acraVersion"
+    implementation "ch.acra:acra-limiter:$acraVersion"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -65,6 +70,11 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1'
     implementation "com.google.code.gson:gson:2.8.9"
     implementation 'androidx.core:core:1.7.0'
+
+    ['boofcv-android', 'boofcv-core'].each {
+        String a -> implementation group: 'org.boofcv', name: a, version: '0.40'
+    }
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

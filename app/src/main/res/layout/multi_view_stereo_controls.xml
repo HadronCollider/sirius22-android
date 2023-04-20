@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:orientation="horizontal"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+
+	<LinearLayout
+		android:layout_width="0dip"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:gravity="center|start"
+		android:orientation="horizontal" >
+
+		<Spinner
+			android:id="@+id/spinner_view"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:layout_gravity="center" />
+
+		<Button
+			android:id="@+id/button_configure"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Configure"
+			android:onClick="configurePressed"
+			android:layout_gravity="center" />
+
+		<Button
+			android:id="@+id/button_reset"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Reset"
+			android:onClick="resetPressed"
+			android:layout_gravity="center"/>
+		<Button
+			android:id="@+id/button_pause_play"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Pause/Play"
+			android:onClick="pausePlayPressed"
+			android:layout_gravity="center"/>
+		<Button
+			android:id="@+id/button_load_imgs"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Load Imgs"
+			android:onClick="loadImgsPressed"
+			android:layout_gravity="center"/>
+	</LinearLayout>
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="0"
+		android:text="Save"
+		android:onClick="savePressed"
+		android:id="@+id/button_save" android:layout_gravity="center"/>
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="0"
+		android:text="Load"
+		android:onClick="loadPressed"
+		android:id="@+id/button_load" android:layout_gravity="center"/>
+</LinearLayout>
