@@ -57,8 +57,12 @@ class ProjectActivity : AppCompatActivity() {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
+        }
 
-
+        val cameraActivity = Intent(this, CameraActivity::class.java)
+        viewBinding.openCamera.setOnClickListener {
+            cameraActivity.putExtra(this.getString(R.string.path_to_dir), dirOfThisProject)
+            startActivity(cameraActivity)
         }
 
         val arguments = intent.extras
@@ -113,7 +117,6 @@ class ProjectActivity : AppCompatActivity() {
 
             }
         })
-
         adapter.data = allImages
         viewBinding.imageList.adapter = adapter
     }
@@ -203,5 +206,6 @@ class ProjectActivity : AppCompatActivity() {
         return Bitmap.createBitmap(
             bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
         )
+
     }
 }
