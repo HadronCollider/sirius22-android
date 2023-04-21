@@ -51,7 +51,6 @@ class CameraActivity : AppCompatActivity() {
                     in 225 until 315 -> ROTATION_90
                     else -> ROTATION_0
                 }
-                //Toast.makeText(this@CameraActivity, rotation.toString(), Toast.LENGTH_SHORT).show()
                 imageCapture?.targetRotation = rotation
 
             }
@@ -101,7 +100,6 @@ class CameraActivity : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                     output.savedUri?.let { rotateImage(it) }
                 }

@@ -117,7 +117,6 @@ class ProjectActivity : AppCompatActivity() {
 
             }
         })
-
         adapter.data = allImages
         viewBinding.imageList.adapter = adapter
     }
