@@ -195,16 +195,15 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     private fun getAllImages() {
-        val images = mutableListOf<Uri>()
-        File("/$dirOfThisProject").walk().forEach {
-            images.add(it.toUri())
-        }
+        var firstPosition = true
         allImages.clear()
-        images.removeAt(0)
-        for (i in images) {
-            if (i.path.toString().endsWith(".jpeg")) {
-                allImages.add(i)
+        File("/$dirOfThisProject").walk().forEach {
+            if (!firstPosition) {
+                if (it.path.toString().endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) {
+                    allImages.add(it.toUri())
+                }
             }
+            firstPosition = false
         }
     }
 
