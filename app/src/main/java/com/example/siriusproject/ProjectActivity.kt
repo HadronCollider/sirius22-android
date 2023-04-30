@@ -195,15 +195,13 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     private fun getAllImages() {
-        var firstPosition = true
         allImages.clear()
         File("/$dirOfThisProject").walk().forEach {
-            if (!firstPosition) {
-                if (it.path.toString().endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) {
-                    allImages.add(it.toUri())
-                }
+            if (it.path.toString()
+                    .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")
+            ) {
+                allImages.add(it.toUri())
             }
-            firstPosition = false
         }
     }
 
