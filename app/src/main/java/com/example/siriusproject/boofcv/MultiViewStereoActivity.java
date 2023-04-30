@@ -99,8 +99,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 /**
  * Provides a UI for collecting images for use in Multi View Stereo
  */
-public class MultiViewStereoActivity extends DemoCamera2Activity
-        implements AdapterView.OnItemSelectedListener, PopupMenu.OnMenuItemClickListener {
+public class MultiViewStereoActivity extends DemoCamera2Activity implements AdapterView.OnItemSelectedListener, PopupMenu.OnMenuItemClickListener {
     // TODO Add help button that takes you to a website/youtube video
     // TODO Clean up this class
     // TODO Save similar image info so that tracks are known
@@ -147,20 +146,10 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
     SparseReconstructionThread threadSparse;
 
-    final SimilarImagesFromTracks<PointTrack> similar =
-            new SimilarImagesFromTracks<>(t -> t.featureId, (t, p) -> p.setTo(t.pixel));
+    final SimilarImagesFromTracks<PointTrack> similar = new SimilarImagesFromTracks<>(t -> t.featureId, (t, p) -> p.setTo(t.pixel));
     LookUpCameraInfo dbCams = new LookUpCameraInfo();
     final List<String> imageFiles = new ArrayList<>();
-    final LookUpImageFilesByIndex imageLookup = new LookUpImageFilesByIndex(imageFiles,
-            (path, image) -> ConvertBitmap.bitmapToBoof(
-                    Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeFile(path),
-                            cameraWidth,
-                            cameraHeight,
-                            false),
-                    image,
-                    null)
-    );
+    final LookUpImageFilesByIndex imageLookup = new LookUpImageFilesByIndex(imageFiles, (path, image) -> ConvertBitmap.bitmapToBoof(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(path), cameraWidth, cameraHeight, false), image, null));
 
     //----------------- Text in processing window
     // Displays current status
@@ -235,8 +224,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         buttonSave = controls.findViewById(R.id.button_save);
         buttonSave.setEnabled(false);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.mvs_views, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.mvs_views, android.R.layout.simple_spinner_item);
         // if it doesn't support 3D rendering remove the cloud option
         if (!hasGLES20()) {
             toast("No GLES20. Can't display point cloud");
@@ -288,7 +276,9 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     @Override
-    public void createNewProcessor() { setProcessing(new MvsProcessing());  }
+    public void createNewProcessor() {
+        setProcessing(new MvsProcessing());
+    }
 
     @Override
     protected void onStop() {
@@ -313,8 +303,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent == spinnerDisplay) {
             // You should only be able to select an item in the view spinner while viewing results
-            if (mode != Mode.VIEW_RESULTS)
-                return;
+            if (mode != Mode.VIEW_RESULTS) return;
             changeDisplay(Display.values()[position]);
         }
     }
@@ -374,6 +363,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     public void loadImgsPressed(View view) {
         loadImgsImpl(); // Загружаем снимки из проекта в память активности
     }
+
     public void pausePlayPressed(View view) {
         paused = !paused; // Ставим получение снимков из сторонней камеры на паузу
     }
@@ -390,15 +380,11 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     protected void loadWorkDirectory(boolean alertOnError) {
         Log.i(TAG, "Loading Work Directory. alert=" + alertOnError);
         loadFileNames(new File(workingDir, ""), imageFiles);
-        if (imageFiles.isEmpty())
-            return;
+        if (imageFiles.isEmpty()) return;
         loadFileNames(new File(workingDir, "disparity"), disparityPaths);
-        if (disparityPaths.isEmpty())
-            return;
-        if (!loadPointCloud(denseCloudView, "dense_cloud.ply", alertOnError))
-            return;
-        if (!loadPointCloud(sparseCloudView, "sparse_cloud.ply", alertOnError))
-            return;
+        if (disparityPaths.isEmpty()) return;
+        if (!loadPointCloud(denseCloudView, "dense_cloud.ply", alertOnError)) return;
+        if (!loadPointCloud(sparseCloudView, "sparse_cloud.ply", alertOnError)) return;
         changeMode(Mode.VIEW_RESULTS);
 
         // Disable save since it's already saved
@@ -433,14 +419,12 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     private void loadFileNames(File directory, List<String> paths) {
         paths.clear();
         List<String> files = UtilIO.listAll(directory.getPath());
-        if (files.isEmpty())
-            return;
+        if (files.isEmpty()) return;
 
         Collections.sort(files);
         for (int i = 0; i < files.size(); i++) {
             File f = new File(files.get(i));
-            if (!f.isFile())
-                continue;
+            if (!f.isFile()) continue;
             paths.add(f.getPath());
         }
     }
@@ -458,8 +442,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     private void changeMode(Mode mode) {
-        if (this.mode == mode)
-            return;
+        if (this.mode == mode) return;
 
         Mode previousMode = this.mode;
         this.mode = mode;
@@ -518,8 +501,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     private void changeDisplay(Display display) {
-        if (this.display == display)
-            return;
+        if (this.display == display) return;
 
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
             throw new RuntimeException("Must be in UI thread");
@@ -541,16 +523,13 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
         if (display == Display.DEBUG) {
             buttonReset.setEnabled(false);
-            layoutViews.addView(debugView, layoutViews.getChildCount(),
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            layoutViews.addView(debugView, layoutViews.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else if (display == Display.DENSE_CLOUD) {
             buttonReset.setEnabled(true);
-            layoutViews.addView(denseCloudView, layoutViews.getChildCount(),
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            layoutViews.addView(denseCloudView, layoutViews.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else if (display == Display.SPARSE_CLOUD) {
             buttonReset.setEnabled(true);
-            layoutViews.addView(sparseCloudView, layoutViews.getChildCount(),
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            layoutViews.addView(sparseCloudView, layoutViews.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else if (display == Display.IMAGES) {
             buttonReset.setEnabled(false);
             lockDisplayImage.lock();
@@ -580,8 +559,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         }
 
         // Update the spinner so that it correctly indicates which display is being shown
-        if (display != Display.COLLECT)
-            spinnerDisplay.setSelection(display.ordinal());
+        if (display != Display.COLLECT) spinnerDisplay.setSelection(display.ordinal());
     }
 
     /**
@@ -598,20 +576,15 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             // Change the image being viewed
             if (display == Display.IMAGES || display == Display.DISPARITY) {
-                if (Math.abs(velocityX) < Math.abs(velocityY) * 3)
-                    return false;
+                if (Math.abs(velocityX) < Math.abs(velocityY) * 3) return false;
 
                 lockDisplayImage.lock();
                 try {
-                    if (velocityX > 0)
-                        displayImageIdx--;
-                    else
-                        displayImageIdx++;
+                    if (velocityX > 0) displayImageIdx--;
+                    else displayImageIdx++;
                     final int N = displayImagePaths.size();
-                    if (displayImageIdx < 0)
-                        displayImageIdx = N - 1;
-                    else if (displayImageIdx >= N)
-                        displayImageIdx = 0;
+                    if (displayImageIdx < 0) displayImageIdx = N - 1;
+                    else if (displayImageIdx >= N) displayImageIdx = 0;
                     displayImageChanged = true;
                 } finally {
                     lockDisplayImage.unlock();
@@ -629,8 +602,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                 lockDisplayImage.lock();
                 try {
                     displayImageIdx++;
-                    if (displayImageIdx >= displayImagePaths.size())
-                        displayImageIdx = 0;
+                    if (displayImageIdx >= displayImagePaths.size()) displayImageIdx = 0;
                     displayImageChanged = true;
                 } finally {
                     lockDisplayImage.unlock();
@@ -707,7 +679,8 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             shouldLoadImages = true;
             File dir = new File(projectDir);
             List<File> imagesFiles = Arrays.stream(dir.listFiles())
-                    .filter(file -> file.isFile() && file.getName().endsWith(".jpg"))
+                    .filter(file -> file.isFile() &&
+                            (file.getName().endsWith(".jpg") || file.getName().endsWith(".jpeg") || file.getName().endsWith(".png")))
                     .collect(Collectors.toList());
 
             new Thread(() -> {
@@ -753,8 +726,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                 // Draw status on the bottom of the screen. This avoid conflict with FPS text
                 canvas.drawText(statusText, 10, canvas.getHeight() - 40 * displayMetrics.density, paintText);
 
-                if (lockTrack.isLocked())
-                    return;
+                if (lockTrack.isLocked()) return;
                 lockTrack.lock();
                 try {
                     canvas.concat(imageToView);
@@ -762,8 +734,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                     if (!paused) {
                         int red = savedFrame ? 0xFF : 0x00;
                         paintDot.setColor((0xFF << 24) | (red << 16));
-                        trackPixels.forEach(p ->
-                                canvas.drawCircle((float) p.x, (float) p.y, circleRadius * 3.5f, paintDot));
+                        trackPixels.forEach(p -> canvas.drawCircle((float) p.x, (float) p.y, circleRadius * 3.5f, paintDot));
                     }
                 } finally {
                     lockTrack.unlock();
@@ -792,8 +763,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                 canvas.drawText(warningText, cx, cy, paintWarning);
 
                 // See if the text has been displayed for too long
-                if (warningTimeOut < System.currentTimeMillis())
-                    warningText = "";
+                if (warningTimeOut < System.currentTimeMillis()) warningText = "";
             }
         }
 
@@ -820,8 +790,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                 if ((display == Display.IMAGES || display == Display.DISPARITY) && changed && path != null) {
                     displayImageChanged = false;
                     bitmap = BitmapFactory.decodeFile(path);
-                    if (displayImageRgb)
-                        statusText = "Image " + displayImageIdx;
+                    if (displayImageRgb) statusText = "Image " + displayImageIdx;
                     else {
                         statusText = "Disparity " + FilenameUtils.getBaseName(path).split("_")[1];
                     }
@@ -835,8 +804,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             }
 
             // TODO should it shut off the camera when not in use?
-            if (mode != Mode.COLLECT_IMAGES)
-                return;
+            if (mode != Mode.COLLECT_IMAGES) return;
 
             ConvertImage.average(color, gray);
 
@@ -844,12 +812,15 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
             // If it was force to select a frame and didn't even consider that it could be 3D
             // The user is most likely rotating the camera. The first frame is never 3D
-            if (selectedFrame && !selector.isConsidered3D() &&
-                    selector.getSelectedFrames().size > 1) {
+            if (selectedFrame && !selector.isConsidered3D() && selector.getSelectedFrames().size > 1) {
                 warningText = "";
                 switch (selector.getCause()) {
-                    case EXCESSIVE_MOTION: warningText = "Translate! Do Not Rotate!"; break;
-                    case TRACKING_FAILURE: warningText = "Tracking Problems"; break;
+                    case EXCESSIVE_MOTION:
+                        warningText = "Translate! Do Not Rotate!";
+                        break;
+                    case TRACKING_FAILURE:
+                        warningText = "Tracking Problems";
+                        break;
                 }
                 if (!warningText.isEmpty()) {
                     warningTimeOut = System.currentTimeMillis() + 2_000;
@@ -869,13 +840,11 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                     imageFiles.clear();
                 } else {
                     // Copy into bitmap for visualization
-                    if (!paused)
-                        ConvertBitmap.interleavedToBitmap(color, bitmap, bitmapStorage);
+                    if (!paused) ConvertBitmap.interleavedToBitmap(color, bitmap, bitmapStorage);
                     else if (!shouldLoadImages) {
                         ConvertBitmap.interleavedToBitmap(blackFrame, bitmap, bitmapStorage);
                     }
-                    if (!paused)
-                        selector.lookupKeyFrameTracksInCurrentFrame(trackPixels);
+                    if (!paused) selector.lookupKeyFrameTracksInCurrentFrame(trackPixels);
 
                     // The user tapped the screen, which is a request to go onto reconstruction
                     if (screenTap) {
@@ -893,8 +862,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                         dbCams.addView(imageFiles.size() + "", 0);
 
                         File dest = new File(workingDir, String.format( //сохраняем изображения, сделанные сторонней камерой, в наш проект (шаблон: i.jpg, где i - номер снимка)
-                                Locale.getDefault(), "%d.jpg",
-                                imageFiles.size()+1));
+                                Locale.getDefault(), "%d.jpg", imageFiles.size() + 1));
                         try {
                             FileOutputStream fos = new FileOutputStream(dest);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -937,8 +905,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     class RedirectPrintToView implements Runnable {
         @Override
         public void run() {
-            if (mode != Mode.SPARSE_RECONSTRUCTION && mode != Mode.DENSE_STEREO)
-                return;
+            if (mode != Mode.SPARSE_RECONSTRUCTION && mode != Mode.DENSE_STEREO) return;
 
             if (byteOutputStream.size() > 0) {
                 String text = byteOutputStream.toString();
@@ -971,8 +938,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             return null;
         }
 
-        if (!new File(savePath, "disparity").mkdir())
-            toast("Failed to create disparity directory");
+        if (!new File(savePath, "disparity").mkdir()) toast("Failed to create disparity directory");
         return savePath;
     }
 
@@ -1074,10 +1040,8 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             configDense.mvs.maximumCenterOverlap = 0.7;
             configDense.mvs.maxCombinePairs = 5;
 
-            SparseSceneToDenseCloud<GrayU8> sparseToDense =
-                    FactorySceneReconstruction.sparseSceneToDenseCloud(configDense, ImageType.SB_U8);
-            sparseToDense.getMultiViewStereo().setVerbose(debugStream,
-                    BoofMiscOps.hashSet(BoofVerbose.RECURSIVE, BoofVerbose.RUNTIME));
+            SparseSceneToDenseCloud<GrayU8> sparseToDense = FactorySceneReconstruction.sparseSceneToDenseCloud(configDense, ImageType.SB_U8);
+            sparseToDense.getMultiViewStereo().setVerbose(debugStream, BoofMiscOps.hashSet(BoofVerbose.RECURSIVE, BoofVerbose.RUNTIME));
 
             MultiViewStereoFromKnownSceneStructure<GrayU8> mvs = sparseToDense.getMultiViewStereo();
 
@@ -1090,18 +1054,15 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             // This allows us to display intermediate results to the user while they wait for all of this to finish
             mvs.setListener(new MultiViewStereoFromKnownSceneStructure.Listener<GrayU8>() {
                 @Override
-                public void handlePairDisparity(String left, String right, GrayU8 rect0, GrayU8 rect1,
-                                                GrayF32 disparity, GrayU8 mask, DisparityParameters parameters) {
+                public void handlePairDisparity(String left, String right, GrayU8 rect0, GrayU8 rect1, GrayF32 disparity, GrayU8 mask, DisparityParameters parameters) {
                 }
 
                 @Override
-                public void handleFusedDisparity(String name,
-                                                 GrayF32 disparity, GrayU8 mask, DisparityParameters parameters) {
+                public void handleFusedDisparity(String name, GrayF32 disparity, GrayU8 mask, DisparityParameters parameters) {
                     lockCloud.lock();
                     try {
                         bitmapDisparity = ConvertBitmap.checkDeclare(disparity, bitmapDisparity);
-                        VisualizeImageData.disparity(disparity, parameters.disparityRange, 0,
-                                bitmapDisparity, workspaceDisparity);
+                        VisualizeImageData.disparity(disparity, parameters.disparityRange, 0, bitmapDisparity, workspaceDisparity);
                     } finally {
                         lockCloud.unlock();
                     }
@@ -1136,17 +1097,14 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
             if (Thread.interrupted()) return;
 
             Log.i(TAG, "Loading Graphs");
-            final PairwiseImageGraph pairwise = MultiViewIO.load(
-                    new File(workingDir, "pairwise.yaml").getPath(), (PairwiseImageGraph) null);
-            final SceneWorkingGraph working = MultiViewIO.load(
-                    new File(workingDir, "working.yaml").getPath(), pairwise, null);
-            final SceneStructureMetric scene = MultiViewIO.load(
-                    new File(workingDir, "scene.yaml").getPath(), (SceneStructureMetric) null);
+            final PairwiseImageGraph pairwise = MultiViewIO.load(new File(workingDir, "pairwise.yaml").getPath(), (PairwiseImageGraph) null);
+            final SceneWorkingGraph working = MultiViewIO.load(new File(workingDir, "working.yaml").getPath(), pairwise, null);
+            final SceneStructureMetric scene = MultiViewIO.load(new File(workingDir, "scene.yaml").getPath(), (SceneStructureMetric) null);
             if (Thread.interrupted()) return;
 
             Log.i(TAG, "Creating MVS Graph");
             TIntObjectMap<String> viewToId = new TIntObjectHashMap<>();
-            BoofMiscOps.forIdx(working.listViews, ( workIdxI, wv ) -> viewToId.put(wv.index, wv.pview.id));
+            BoofMiscOps.forIdx(working.listViews, (workIdxI, wv) -> viewToId.put(wv.index, wv.pview.id));
             try {
                 if (!sparseToDense.process(scene, viewToId, imageLookup))
                     throw new RuntimeException("Dense reconstruction failed!");
@@ -1170,8 +1128,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         }
     }
 
-    private void updateDenseCloud(SparseSceneToDenseCloud<GrayU8> sparseToDense,
-                                  SceneStructureMetric scene) {
+    private void updateDenseCloud(SparseSceneToDenseCloud<GrayU8> sparseToDense, SceneStructureMetric scene) {
         // Colorize the cloud to make it easier to view. This is done by projecting points back into the
         // first view they were seen in and reading the color
         PointCloud3D cloudShow = denseCloudView.getRenderer().getCloud();
@@ -1199,11 +1156,10 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         // Save the dense cloud to disk
         try {
             OutputStream output = new FileOutputStream(new File(workingDir, "dense_cloud.ply"));
-            PointCloudIO.save3D(PointCloudIO.Format.PLY,
-                    PointCloudReader.wrap3FRGB(cloudShow.points.data, cloudShow.colors.data, 0, cloudMvs.size()),
-                    true, output);
+            PointCloudIO.save3D(PointCloudIO.Format.PLY, PointCloudReader.wrap3FRGB(cloudShow.points.data, cloudShow.colors.data, 0, cloudMvs.size()), true, output);
             output.close();
-        } catch (IOException ignore) {}
+        } catch (IOException ignore) {
+        }
 
         // Show the results
         runOnUiThread(cloudShow::finalizePoints);
@@ -1249,9 +1205,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         // Save the dense cloud to disk
         try {
             OutputStream output = new FileOutputStream(new File(workingDir, "sparse_cloud.ply"));
-            PointCloudIO.save3D(PointCloudIO.Format.PLY,
-                    PointCloudReader.wrap3FRGB(cloudShow.points.data, cloudShow.colors.data, 0, scene.points.size()),
-                    true, output);
+            PointCloudIO.save3D(PointCloudIO.Format.PLY, PointCloudReader.wrap3FRGB(cloudShow.points.data, cloudShow.colors.data, 0, scene.points.size()), true, output);
             output.close();
         } catch (IOException ignore) {
         }
@@ -1261,18 +1215,10 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     enum Mode {
-        COLLECT_IMAGES,
-        SPARSE_RECONSTRUCTION,
-        DENSE_STEREO,
-        VIEW_RESULTS
+        COLLECT_IMAGES, SPARSE_RECONSTRUCTION, DENSE_STEREO, VIEW_RESULTS
     }
 
     enum Display {
-        DEBUG,
-        IMAGES,
-        DISPARITY,
-        SPARSE_CLOUD,
-        DENSE_CLOUD,
-        COLLECT
+        DEBUG, IMAGES, DISPARITY, SPARSE_CLOUD, DENSE_CLOUD, COLLECT
     }
 }
