@@ -24,10 +24,8 @@ class ReadProjectData(path: File) {
             if (allText.isNotEmpty()) {
                 allProjectsData =
                     Gson().fromJson(allText, Array<ProjectData>::class.java).toMutableList()
-                if (allProjectsData.isNotEmpty())
-                    Log.d("json file", allProjectsData.toString())
-                else
-                    Log.d("json file", "file is empty")
+                if (allProjectsData.isNotEmpty()) Log.d("json file", allProjectsData.toString())
+                else Log.d("json file", "file is empty")
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -44,8 +42,7 @@ class ReadProjectData(path: File) {
     }
 
     fun getLastId(): Int {
-        return if (allProjectsData.isNotEmpty())
-            allProjectsData.last().id + 1
+        return if (allProjectsData.isNotEmpty()) allProjectsData.last().id + 1
         else 1
     }
 
@@ -57,14 +54,36 @@ class ReadProjectData(path: File) {
         allProjectsData.add(ProjectData(id, name, quality, data))
     }
 
-    fun removeProject(id: Int) : Boolean {
+    fun removeProject(id: Int): Boolean {
         for (i in allProjectsData) {
             if (i.id == id) {
-                allProjectsData.remove(i)
-                return true
+                return try {
+                    val dir = File(pathToDirectory.substring(0, pathToDirectory.length - 6) + "files" + i.name + i.id.toString())
+                    if (dir.isDirectory) {
+                        deleteFolder(dir)
+                        dir.delete()
+                    }
+                    allProjectsData.remove(i)
+                    writeAllDataToFile()
+                    true
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    false
+                }
             }
         }
         return false
+    }
+
+    private fun deleteFolder(folder: File) {
+        for (file in folder.listFiles()!!) {
+            if (file.isDirectory) {
+                deleteFolder(file);
+                continue
+            }
+            file.delete()
+        }
+        folder.delete()
     }
 
     fun writeAllDataToFile() {
