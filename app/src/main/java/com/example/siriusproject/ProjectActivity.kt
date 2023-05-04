@@ -86,6 +86,7 @@ class ProjectActivity : AppCompatActivity() {
                 writeNewData(arguments)
             }
         }
+        toolbarBinding.pageTitle.text = data.name
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
         try {
             Files.createDirectory(Paths.get(dirOfThisProject))
