@@ -153,6 +153,12 @@ class ProjectActivity : AppCompatActivity() {
         allData.writeAllDataToFile()
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        getAllImages()
+        adapter.data = allImages
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -189,10 +195,25 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     private fun getAllImages() {
+        allImages.clear()
         File("/$dirOfThisProject").walk().forEach {
-            allImages.add(it.toUri())
+            if ((it.path.toString()
+                    .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) &&
+                        checkThePositionOfFile(it.path.toString())
+                    ) {
+                allImages.add(it.toUri())
+            }
         }
-        allImages.removeAt(0)
+    }
+
+    private fun checkThePositionOfFile(path: String): Boolean {
+        if (path.length > dirOfThisProject.length) {
+            path.substring(dirOfThisProject.length - 1, path.length).forEachIndexed { index, it ->
+                if (it == '/' && index != 0)
+                    return false
+            }
+        }
+        return true
     }
 
     //поворот изображения
