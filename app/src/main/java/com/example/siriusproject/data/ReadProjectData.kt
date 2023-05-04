@@ -60,8 +60,7 @@ class ReadProjectData(path: File) {
                 return try {
                     val dir = File(pathToDirectory.substring(0, pathToDirectory.length - 6) + "files" + i.name + i.id.toString())
                     if (dir.isDirectory) {
-                        deleteFolder(dir)
-                        dir.delete()
+                        dir.deleteRecursively()
                     }
                     allProjectsData.remove(i)
                     writeAllDataToFile()
@@ -73,17 +72,6 @@ class ReadProjectData(path: File) {
             }
         }
         return false
-    }
-
-    private fun deleteFolder(folder: File) {
-        for (file in folder.listFiles()!!) {
-            if (file.isDirectory) {
-                deleteFolder(file);
-                continue
-            }
-            file.delete()
-        }
-        folder.delete()
     }
 
     fun writeAllDataToFile() {
