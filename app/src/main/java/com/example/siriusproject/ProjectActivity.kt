@@ -208,8 +208,8 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun checkThePositionOfFile(path: String): Boolean {
         if (path.length > dirOfThisProject.length) {
-            path.substring(dirOfThisProject.length - 1, path.length).forEachIndexed { index, it ->
-                if (it == '/' && index != 0)
+            path.substring(dirOfThisProject.length, path.length).forEach { it ->
+                if (it == '/')
                     return false
             }
         }
