@@ -198,20 +198,18 @@ class ProjectActivity : AppCompatActivity() {
         allImages.clear()
         File("/$dirOfThisProject").walk().forEach {
             if ((it.path.toString()
-                    .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) &&
-                        checkThePositionOfFile(it.path.toString())
-                    ) {
+                    .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) && checkThePositionOfFile(
+                    it.path.toString()
+                )
+            ) {
                 allImages.add(it.toUri())
             }
         }
     }
 
     private fun checkThePositionOfFile(path: String): Boolean {
-        if (path.length > dirOfThisProject.length) {
-            path.substring(dirOfThisProject.length, path.length).forEach { it ->
-                if (it == '/')
-                    return false
-            }
+        path.substring(dirOfThisProject.length, path.length).forEach { it ->
+            if (it == '/') return false
         }
         return true
     }
