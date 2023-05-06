@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.databinding.ActivityNewProjectBinding
@@ -26,17 +25,6 @@ class NewProject : AppCompatActivity() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.customView = toolbarBinding.root
 
-        var qualityButton = RadioButton(this)
-        qualityButton.setText(R.string.low_quality)
-        viewBinding.radioButtons.addView(qualityButton)
-        qualityButton = RadioButton(this)
-        qualityButton.setText(R.string.middle_quality)
-        viewBinding.radioButtons.addView(qualityButton)
-        qualityButton = RadioButton(this)
-        qualityButton.setText(R.string.high_quality)
-        viewBinding.radioButtons.addView(qualityButton)
-
-
         val projectActivity = Intent(this, ProjectActivity::class.java)
 
         viewBinding.createProject.setOnClickListener {
@@ -46,17 +34,6 @@ class NewProject : AppCompatActivity() {
                 toast.show()
                 return@setOnClickListener
             }
-            val chosenButton = viewBinding.radioButtons.checkedRadioButtonId
-            if (chosenButton == -1) {
-                val toast =
-                    Toast.makeText(applicationContext, R.string.wrong_quality, Toast.LENGTH_SHORT)
-                toast.show()
-                return@setOnClickListener
-            }
-            projectActivity.putExtra(
-                "Quality",
-                viewBinding.radioButtons.checkedRadioButtonId.toString()
-            )
             projectActivity.putExtra(this.getString(R.string.name_type), viewBinding.input.text.toString())
             projectActivity.putExtra(this.getString(R.string.type_type), this.getString(R.string.new_project_made))
             startActivityForResult(projectActivity, START_FOR_RESULT)
