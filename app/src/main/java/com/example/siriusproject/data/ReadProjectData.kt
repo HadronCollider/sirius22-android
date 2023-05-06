@@ -50,8 +50,8 @@ class ReadProjectData(path: File) {
         allProjectsData.add(information)
     }
 
-    fun writeData(id: Int, name: String, quality: Short, data: Date) {
-        allProjectsData.add(ProjectData(id, name, quality, data))
+    fun writeData(id: Int, name: String, data: Date) {
+        allProjectsData.add(ProjectData(id, name, data))
     }
 
     fun removeProject(id: Int): Boolean {

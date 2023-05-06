@@ -31,7 +31,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityProjectBinding
     private lateinit var toolbarBinding: ToolbarActivityProjectBinding
-    private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
+    private var data = ProjectData(1, "", Calendar.getInstance().time)
     private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
     private var galleryRequest = 1
@@ -130,7 +130,6 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun writeNewData(arguments: Bundle) {
         data.name = arguments.getString(this.getString(R.string.name_type)).toString()
-        data.quality = arguments.getShort(R.string.quality_type.toString())
         data.id = allData.getLastId()
         allData.writeData(data)
     }
