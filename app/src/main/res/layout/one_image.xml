@@ -35,7 +35,9 @@
             android:textAppearance="@style/project_1"
             android:translationY="-2.62sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <ImageButton
             android:id="@+id/delete_project"
