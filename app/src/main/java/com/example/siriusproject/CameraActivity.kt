@@ -37,8 +37,9 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
-    private val qualityOfImages =
-        90            // используется при сохранении изображения от 0 до 100
+    private val qualityOfImages = 100       // качество изображений для построения модели
+    private val qualityOfSmallImages = 1    // качество маленьких изображений
+
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -102,6 +103,7 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Log.d(TAG, msg)
                     output.savedUri?.let { rotateImage(it) }
+
                 }
             })
     }
@@ -165,7 +167,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     fun rotateImage(image: Uri) {
         val exif = image.path?.let { ExifInterface(it) }
         val orientation = exif?.getAttributeInt(
@@ -184,9 +185,14 @@ class CameraActivity : AppCompatActivity() {
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
         val file = image.path?.let { File(it) }
+        if (file != null) {
+            createSmallVersionOfImg(bitmap, file.name)
+        }
         val os = BufferedOutputStream(FileOutputStream(file))
         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
         os.close()
+
+
     }
 
 
@@ -200,4 +206,11 @@ class CameraActivity : AppCompatActivity() {
         orientationEventListener.disable()
     }
 
+
+    private fun createSmallVersionOfImg(bitmap: Bitmap, name: String) {
+        val file = File(allFilesDir + "img/" + name)
+        val os = BufferedOutputStream(FileOutputStream(file))
+        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfSmallImages, os)
+        os.close()
+    }
 }

@@ -42,7 +42,7 @@ class ProjectActivity : AppCompatActivity() {
     private lateinit var adapter: ImageAdapter
 
     private val qualityOfSmallImages =
-        2            // качество изображений для показа в списке
+        1            // качество изображений для показа в списке
     private val qualityOfImages = 100   // качество изображений для построения модели
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -91,7 +91,7 @@ class ProjectActivity : AppCompatActivity() {
         }
         toolbarBinding.pageTitle.text = data.name
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
-        dirOfSmallImages = dirOfThisProject + "img" + "/"
+        dirOfSmallImages = dirOfThisProject + "img/"
         try {
             Files.createDirectory(Paths.get(dirOfThisProject))
             Files.createDirectory(Paths.get(dirOfSmallImages))
@@ -209,7 +209,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun getAllImages() {
         allImages.clear()
-        File("/$dirOfSmallImages").walk().forEach {
+        File(dirOfSmallImages).walk().forEach {
             if ((it.path.toString()
                     .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) &&
                         checkThePositionOfFile(it.path.toString())
@@ -221,7 +221,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun checkThePositionOfFile(path: String): Boolean {
         if (path.length > dirOfThisProject.length) {
-            path.substring(dirOfThisProject.length - 1, path.length).forEachIndexed { index, it ->
+            path.substring(dirOfSmallImages.length - 1, path.length).forEachIndexed { index, it ->
                 if (it == '/' && index != 0)
                     return false
             }
