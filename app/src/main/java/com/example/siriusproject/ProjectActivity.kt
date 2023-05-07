@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.boofcv.DemoMain
@@ -34,13 +35,15 @@ class ProjectActivity : AppCompatActivity() {
     private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
     private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
+    private lateinit var dirOfSmallImages: String
     private var galleryRequest = 1
 
     private var allImages: MutableList<Uri> = mutableListOf()
     private lateinit var adapter: ImageAdapter
 
-    private val qualityOfImages =
-        90            // используется при сохранении изображения от 0 до 100
+    private val qualityOfSmallImages =
+        2            // качество изображений для показа в списке
+    private val qualityOfImages = 100   // качество изображений для построения модели
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,8 +91,10 @@ class ProjectActivity : AppCompatActivity() {
         }
         toolbarBinding.pageTitle.text = data.name
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
+        dirOfSmallImages = dirOfThisProject + "img" + "/"
         try {
             Files.createDirectory(Paths.get(dirOfThisProject))
+            Files.createDirectory(Paths.get(dirOfSmallImages))
         } catch (e: IOException) {
             Log.d("files", "can't make a new directory")
         }
@@ -105,8 +110,10 @@ class ProjectActivity : AppCompatActivity() {
             }
 
             override fun onRemove(image: Uri) {
-                val file = image.path?.let { File(it) }
-                val result = file?.delete()
+                var file = image.path?.let { File(it) }
+                var result = file?.delete()
+                file = File(dirOfThisProject + image.toFile().name)
+                result = file.delete() && result == true
                 if (result == true) {
                     Toast.makeText(
                         this@ProjectActivity,
@@ -174,11 +181,16 @@ class ProjectActivity : AppCompatActivity() {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
                         bitmap = rotateImage(bitmap, selectedImage)
                         val imageName = Calendar.getInstance().timeInMillis.toString() + ".jpeg"
-                        val file = File(
+                        var file = File(
                             dirOfThisProject, imageName
                         )
-                        val os = BufferedOutputStream(FileOutputStream(file))
+                        var os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
+                        os.close()
+
+                        file = File(dirOfSmallImages, imageName)
+                        os = BufferedOutputStream(FileOutputStream(file))
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfSmallImages, os)
                         os.close()
 
                         if (selectedImage != null) {
@@ -197,7 +209,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun getAllImages() {
         allImages.clear()
-        File("/$dirOfThisProject").walk().forEach {
+        File("/$dirOfSmallImages").walk().forEach {
             if ((it.path.toString()
                     .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) &&
                         checkThePositionOfFile(it.path.toString())
