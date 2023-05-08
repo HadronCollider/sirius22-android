@@ -99,6 +99,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 /**
  * Provides a UI for collecting images for use in Multi View Stereo
  */
+
 public class MultiViewStereoActivity extends DemoCamera2Activity
         implements AdapterView.OnItemSelectedListener, PopupMenu.OnMenuItemClickListener {
     // TODO Add help button that takes you to a website/youtube video
@@ -210,8 +211,8 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
     public static File getExternalDirectory(Activity activity) {
         // if possible use a public directory. If that fails use a private one
-//		if(Objects.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)) {
-//			File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//		if(Objects.equals(Environment.getExternalStorageState(), Enviroent.MEDIA_MOUNTED)) {
+////			File dir = Environment.getExternalStoragePublicDirectory(Environmnment.DIRECTORY_DOCUMENTS);
 //			if( !dir.exists() )
 //				dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 //			return new File(dir,"org.boofcv.android");
@@ -292,7 +293,8 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
     @Override
     protected void onStop() {
-        super.onStop();
+
+                super.onStop();
         Log.i(TAG, "ENTER onStop()");
 
         // If there are threads running request that they stop. Otherwise they will keep

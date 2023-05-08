@@ -15,7 +15,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
-import com.example.siriusproject.boofcv.DemoMain
+import com.example.siriusproject.boofcv.MultiViewStereoActivity
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
 import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
@@ -55,7 +55,7 @@ class ProjectActivity : AppCompatActivity() {
         }
         toolbarBinding.iconsNavig.setOnClickListener {
             // TODO: Добавить проверку на доступность камеры
-            val intent = Intent(this, DemoMain::class.java)
+            val intent = Intent(this, MultiViewStereoActivity::class.java)
             intent.putExtra("project_path", dirOfThisProject)
             startActivity(intent)
         }
