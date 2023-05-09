@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
@@ -59,11 +58,15 @@ class ProjectActivity : AppCompatActivity() {
             intent.putExtra("project_path", dirOfThisProject)
             startActivity(intent)
         }
-        val addImage = findViewById<Button>(R.id.add_images)
-        addImage.setOnClickListener {
+
+        viewBinding.addImages.setOnClickListener {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
+        }
+
+        toolbarBinding.settings.setOnClickListener {
+            Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
         }
 
         val cameraActivity = Intent(this, CameraActivity::class.java)
