@@ -15,12 +15,14 @@ import android.view.OrientationEventListener
 import android.view.Surface.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.siriusproject.databinding.ActivityCameraBinding
+import com.example.siriusproject.databinding.ToolbarCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -33,6 +35,8 @@ import java.util.concurrent.Executors
 class CameraActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityCameraBinding
+    private lateinit var toolbarBinding: ToolbarCameraBinding
+
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
@@ -61,7 +65,14 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityCameraBinding.inflate(layoutInflater)
+        toolbarBinding = ToolbarCameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        supportActionBar?.customView = toolbarBinding.root
+
+        toolbarBinding.backButton.setOnClickListener {
+            this.finish()
+        }
 
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
