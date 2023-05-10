@@ -20,6 +20,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File
@@ -38,8 +39,6 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
     private val qualityOfImages = 100       // качество изображений для построения модели
-    private val qualityOfSmallImages = 1    // качество маленьких изображений
-
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -183,16 +182,17 @@ class CameraActivity : AppCompatActivity() {
         val matrix = Matrix()
         matrix.postRotate(rotate.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
-        val file = image.path?.let { File(it) }
-        if (file != null) {
-            createSmallVersionOfImg(bitmap, file.name)
-        }
-        val os = BufferedOutputStream(FileOutputStream(file))
+        var smallerBitmap = bitmap
+        var file = image.path?.let { File(it) }
+        var os = BufferedOutputStream(FileOutputStream(file))
         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
         os.close()
 
-
+        file = File(allFilesDir + "img/" + image.toFile().name)
+        os = BufferedOutputStream(FileOutputStream(file))
+        smallerBitmap = Utils.compressImage(bitmap)
+        smallerBitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
+        os.close()
     }
 
 
@@ -207,10 +207,4 @@ class CameraActivity : AppCompatActivity() {
     }
 
 
-    private fun createSmallVersionOfImg(bitmap: Bitmap, name: String) {
-        val file = File(allFilesDir + "img/" + name)
-        val os = BufferedOutputStream(FileOutputStream(file))
-        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfSmallImages, os)
-        os.close()
-    }
 }

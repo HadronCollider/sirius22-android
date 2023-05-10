@@ -41,8 +41,6 @@ class ProjectActivity : AppCompatActivity() {
     private var allImages: MutableList<Uri> = mutableListOf()
     private lateinit var adapter: ImageAdapter
 
-    private val qualityOfSmallImages =
-        1            // качество изображений для показа в списке
     private val qualityOfImages = 100   // качество изображений для построения модели
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -190,7 +188,8 @@ class ProjectActivity : AppCompatActivity() {
 
                         file = File(dirOfSmallImages, imageName)
                         os = BufferedOutputStream(FileOutputStream(file))
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfSmallImages, os)
+                        bitmap = Utils.compressImage(bitmap)
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
 
                         if (selectedImage != null) {
@@ -206,6 +205,8 @@ class ProjectActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun getAllImages() {
         allImages.clear()
@@ -247,6 +248,10 @@ class ProjectActivity : AppCompatActivity() {
         return Bitmap.createBitmap(
             bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
         )
+
+    }
+
+    companion object {
 
     }
 }
