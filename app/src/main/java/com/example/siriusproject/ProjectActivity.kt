@@ -129,7 +129,7 @@ class ProjectActivity : AppCompatActivity() {
                 }
 
             }
-        })
+        }, dirOfThisProject)
         adapter.data = allImages
         viewBinding.imageList.adapter = adapter
     }
@@ -210,7 +210,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun getAllImages() {
         allImages.clear()
-        File(dirOfSmallImages).walk().forEach {
+        File(dirOfThisProject).walk().forEach {
             if ((it.path.toString()
                     .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) &&
                         checkThePositionOfFile(it.path.toString())
@@ -222,7 +222,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun checkThePositionOfFile(path: String): Boolean {
         if (path.length > dirOfThisProject.length) {
-            path.substring(dirOfSmallImages.length - 1, path.length).forEachIndexed { index, it ->
+            path.substring(dirOfThisProject.length - 1, path.length).forEachIndexed { index, it ->
                 if (it == '/' && index != 0)
                     return false
             }
