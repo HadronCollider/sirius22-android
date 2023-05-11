@@ -110,7 +110,7 @@ class ProjectActivity : AppCompatActivity() {
             override fun onRemove(image: Uri) {
                 var file = image.path?.let { File(it) }
                 var result = file?.delete()
-                file = File(dirOfThisProject + image.toFile().name)
+                file = File(dirOfSmallImages + image.toFile().name)
                 result = file.delete() && result == true
                 if (result == true) {
                     Toast.makeText(
@@ -185,18 +185,18 @@ class ProjectActivity : AppCompatActivity() {
                         var os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
+                        if (selectedImage != null) {
+                            allImages.add(file.toUri())
+                            adapter.data = allImages
 
+                        }
                         file = File(dirOfSmallImages, imageName)
                         os = BufferedOutputStream(FileOutputStream(file))
                         bitmap = Utils.compressImage(bitmap)
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
 
-                        if (selectedImage != null) {
-                            allImages.add(file.toUri())
-                            adapter.data = allImages
 
-                        }
                         viewBinding.imageList.adapter = adapter
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -248,10 +248,6 @@ class ProjectActivity : AppCompatActivity() {
         return Bitmap.createBitmap(
             bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
         )
-
-    }
-
-    companion object {
 
     }
 }
