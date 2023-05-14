@@ -20,52 +20,38 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
+        android:layout_gravity="center"
         android:id="@+id/label"
         android:layout_width="328dp"
         android:layout_height="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="-455dp"
         android:alpha="0.87"
-        android:gravity="top"
         android:lineSpacingExtra="-2sp"
         android:text="@string/label"
-        android:textAppearance="@style/label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAppearance="@style/label" />
 
     <EditText
+        android:layout_gravity="center"
         android:id="@+id/input"
         android:layout_width="328dp"
         android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="-400dp"
         android:gravity="top"
         android:hint="@string/input"
         android:lineSpacingExtra="-1sp"
-        android:textAppearance="@style/input"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAppearance="@style/input" />
 
 
     <Button
+        android:layout_gravity="center"
         android:id="@+id/create_project"
         android:layout_width="140dp"
         android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginTop="393dp"
         android:background="@drawable/button_bg"
         android:text="@string/new_project_button"
-        android:textAppearance="@style/new_project"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAppearance="@style/new_project" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
