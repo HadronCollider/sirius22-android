@@ -10,14 +10,12 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.boofcv.DemoMain
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
-import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -29,7 +27,6 @@ import java.util.*
 class ProjectActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityProjectBinding
-    private lateinit var toolbarBinding: ToolbarActivityProjectBinding
     private var data = ProjectData(1, "", Calendar.getInstance().time)
     private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
@@ -45,28 +42,34 @@ class ProjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityProjectBinding.inflate(layoutInflater)
-        toolbarBinding = ToolbarActivityProjectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.customView = toolbarBinding.root
-        toolbarBinding.backButton.setOnClickListener {
-            this@ProjectActivity.finish()
+
+        viewBinding.topAppBar.setNavigationOnClickListener {
+            this.finish()
         }
-        toolbarBinding.iconsNavig.setOnClickListener {
-            // TODO: Добавить проверку на доступность камеры
-            val intent = Intent(this, DemoMain::class.java)
-            intent.putExtra("project_path", dirOfThisProject)
-            startActivity(intent)
+
+        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.build_model -> {
+                    // TODO: Добавить проверку на доступность камеры
+                    val intent = Intent(this, DemoMain::class.java)
+                    intent.putExtra("project_path", dirOfThisProject)
+                    startActivity(intent)
+                    true
+                }
+                R.id.settings -> {
+                    Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                else -> false
+            }
         }
 
         viewBinding.addImages.setOnClickListener {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
-        }
-
-        toolbarBinding.settings.setOnClickListener {
-            Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
         }
 
         val cameraActivity = Intent(this, CameraActivity::class.java)
@@ -89,7 +92,7 @@ class ProjectActivity : AppCompatActivity() {
                 writeNewData(arguments)
             }
         }
-        toolbarBinding.pageTitle.text = data.name
+        viewBinding.topAppBar.title = data.name
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
         try {
             Files.createDirectory(Paths.get(dirOfThisProject))

@@ -29,6 +29,8 @@
     <string name="delete_f">can\'t find the image</string>
     <string name="path_to_dir">path_to_dir</string>
     <string name="go_back">go back</string>
+    <string name="build_model">build model</string>
+    <string name="settings">settings</string>
 
     <string-array name="mvs_views">
         <item>Debug</item>
