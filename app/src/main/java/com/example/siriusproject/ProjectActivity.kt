@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.boofcv.MultiViewStereoActivity
@@ -55,9 +56,13 @@ class ProjectActivity : AppCompatActivity() {
         }
         toolbarBinding.iconsNavig.setOnClickListener {
             // TODO: Добавить проверку на доступность камеры
-            val intent = Intent(this, MultiViewStereoActivity::class.java)
-            intent.putExtra("project_path", dirOfThisProject)
-            startActivity(intent)
+            if (Utils.allPermissionsGranted(baseContext)) {
+                startBuildingActivity()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this, Utils.REQUIRED_PERMISSIONS, Utils.REQUEST_CODE_PERMISSIONS
+                )
+            }
         }
         val addImage = findViewById<Button>(R.id.add_images)
         addImage.setOnClickListener {
@@ -236,5 +241,26 @@ class ProjectActivity : AppCompatActivity() {
             bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
         )
 
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Utils.REQUEST_CODE_PERMISSIONS) {
+            if (Utils.allPermissionsGranted(baseContext)) {
+                startBuildingActivity()
+            } else {
+                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
+                    .show()
+                finish()
+            }
+        }
+    }
+
+    private fun startBuildingActivity() {
+        val intent = Intent(this, MultiViewStereoActivity::class.java)
+        intent.putExtra("project_path", dirOfThisProject)
+        startActivity(intent)
     }
 }
