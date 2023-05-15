@@ -31,6 +31,7 @@
     <string name="go_back">go back</string>
     <string name="build_model">build model</string>
     <string name="settings">settings</string>
+    <string name="image">image</string>
 
     <string-array name="mvs_views">
         <item>Debug</item>

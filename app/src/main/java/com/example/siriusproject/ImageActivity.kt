@@ -4,21 +4,16 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.siriusproject.databinding.ActivityImageBinding
-import com.example.siriusproject.databinding.ToolbarActivityImageBinding
 
 class ImageActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityImageBinding
-    private lateinit var toolbarBinding: ToolbarActivityImageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityImageBinding.inflate(layoutInflater)
-        toolbarBinding = ToolbarActivityImageBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        supportActionBar?.displayOptions = androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.customView = toolbarBinding.root
-        toolbarBinding.backButton.setOnClickListener {
+        viewBinding.topAppBar.setNavigationOnClickListener {
             this@ImageActivity.finish()
         }
         val arguments = intent.extras
@@ -29,7 +24,7 @@ class ImageActivity : AppCompatActivity() {
         if (imagePath != null) {
             imageName = getName(imagePath)
         }
-        toolbarBinding.imageName.text = imageName
+        viewBinding.topAppBar.title = imageName
     }
 
     private fun getName(path: String): String = path.takeLastWhile { it != '/' }
