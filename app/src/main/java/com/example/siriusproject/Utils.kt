@@ -11,4 +11,6 @@ object Utils {
         width /= smallerIn
         return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
+
+    val MAX_COUNT_OF_IMAGES = 30
 }

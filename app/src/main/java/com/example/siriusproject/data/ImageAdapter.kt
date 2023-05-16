@@ -22,7 +22,7 @@ class ImageAdapter(private val imageActionListener: ImageActionListener, private
             notifyDataSetChanged()
         }
 
-    private var imageBitmaps = LruCache<String, Bitmap>(100)
+    private var imageBitmaps = LruCache<String, Bitmap>(30)
 
     override fun getItemCount(): Int = data.size
 

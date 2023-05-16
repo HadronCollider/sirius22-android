@@ -62,6 +62,10 @@ class ProjectActivity : AppCompatActivity() {
         }
         val addImage = findViewById<Button>(R.id.add_images)
         addImage.setOnClickListener {
+            if (allImages.size >= Utils.MAX_COUNT_OF_IMAGES) {
+                Toast.makeText(this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
