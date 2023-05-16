@@ -55,7 +55,6 @@ class ProjectActivity : AppCompatActivity() {
             this@ProjectActivity.finish()
         }
         toolbarBinding.iconsNavig.setOnClickListener {
-            // TODO: Добавить проверку на доступность камеры
             if (Utils.allPermissionsGranted(baseContext)) {
                 startBuildingActivity()
             } else {
@@ -253,7 +252,6 @@ class ProjectActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
                     .show()
-                finish()
             }
         }
     }
