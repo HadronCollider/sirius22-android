@@ -1,8 +1,10 @@
 package com.example.siriusproject.data
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,8 @@ class ImageAdapter(private val imageActionListener: ImageActionListener, private
             field = value
             notifyDataSetChanged()
         }
+
+    private var imageBitmaps = LruCache<String, Bitmap>(100)
 
     override fun getItemCount(): Int = data.size
 
@@ -37,7 +41,12 @@ class ImageAdapter(private val imageActionListener: ImageActionListener, private
 
         with(holder.binding) {
             imageName.text = imageUri.toFile().name
-            val imageBitmap =  BitmapFactory.decodeFile(pathToDir + "img/" + imageUri.toFile().name)
+            var imageBitmap: Bitmap? = imageBitmaps.get(pathToDir + "img/" + imageUri.toFile().name)
+            if (imageBitmap == null) {
+                imageBitmap =  BitmapFactory.decodeFile(pathToDir + "img/" + imageUri.toFile().name)
+                imageBitmaps.put(imageUri.toString(), imageBitmap)
+            }
+
             holder.binding.imagePreview.setImageBitmap(imageBitmap)
             holder.binding.image.tag = imageUri
             holder.binding.imagePreview.tag = imageUri
