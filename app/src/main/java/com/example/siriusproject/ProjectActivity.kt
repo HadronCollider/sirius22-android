@@ -114,6 +114,7 @@ class ProjectActivity : AppCompatActivity() {
                 result = file.delete() && result == true
                 if (result == true) {
                     allImages.remove(image)
+                    adapter.deleteBimap(image.toFile().name)
                     adapter.data = allImages
                 } else {
                     Toast.makeText(

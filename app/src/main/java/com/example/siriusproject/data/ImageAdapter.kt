@@ -37,14 +37,14 @@ class ImageAdapter(private val imageActionListener: ImageActionListener, private
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val imageUri = data[position]
-
+        val name = imageUri.toFile().name
 
         with(holder.binding) {
-            imageName.text = imageUri.toFile().name
-            var imageBitmap: Bitmap? = imageBitmaps.get(pathToDir + "img/" + imageUri.toFile().name)
+            imageName.text = name
+            var imageBitmap: Bitmap? = imageBitmaps.get(name)
             if (imageBitmap == null) {
-                imageBitmap =  BitmapFactory.decodeFile(pathToDir + "img/" + imageUri.toFile().name)
-                imageBitmaps.put(imageUri.toString(), imageBitmap)
+                imageBitmap =  BitmapFactory.decodeFile(pathToDir + "img/" + name)
+                imageBitmaps.put(name, imageBitmap)
             }
 
             holder.binding.imagePreview.setImageBitmap(imageBitmap)
@@ -65,6 +65,10 @@ class ImageAdapter(private val imageActionListener: ImageActionListener, private
     override fun onClick(view: View) {
         val image = view.tag as Uri
         imageActionListener.onClicked(image)
+    }
+
+    fun deleteBimap(name: String) {
+        imageBitmaps.remove(name)
     }
 
     class ImageViewHolder(val binding: OneImageBinding) : RecyclerView.ViewHolder(binding.root)
