@@ -113,11 +113,6 @@ class ProjectActivity : AppCompatActivity() {
                 file = File(dirOfSmallImages + image.toFile().name)
                 result = file.delete() && result == true
                 if (result == true) {
-                    Toast.makeText(
-                        this@ProjectActivity,
-                        this@ProjectActivity.getString(R.string.delete_s),
-                        Toast.LENGTH_SHORT
-                    ).show()
                     allImages.remove(image)
                     adapter.data = allImages
                 } else {
