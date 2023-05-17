@@ -29,6 +29,7 @@
     <string name="delete_f">can\'t find the image</string>
     <string name="path_to_dir">path_to_dir</string>
     <string name="count_of_images">Too many images</string>
+    <string name="now_count_of_images">now count of images</string>
 
     <string-array name="mvs_views">
         <item>Debug</item>
