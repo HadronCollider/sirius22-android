@@ -55,7 +55,7 @@ class ProjectActivity : AppCompatActivity() {
             this@ProjectActivity.finish()
         }
         toolbarBinding.iconsNavig.setOnClickListener {
-            if (Utils.allPermissionsGranted(baseContext)) {
+            if (Utils.allPermissionsGranted(this)) {
                 startBuildingActivity()
             } else {
                 ActivityCompat.requestPermissions(
@@ -247,7 +247,7 @@ class ProjectActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Utils.REQUEST_CODE_PERMISSIONS) {
-            if (Utils.allPermissionsGranted(baseContext)) {
+            if (Utils.allPermissionsGranted(this)) {
                 startBuildingActivity()
             } else {
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)

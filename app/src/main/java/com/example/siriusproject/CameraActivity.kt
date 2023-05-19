@@ -64,7 +64,7 @@ class CameraActivity : AppCompatActivity() {
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
 
-        if (Utils.allPermissionsGranted(baseContext)) {
+        if (Utils.allPermissionsGranted(this)) {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
@@ -140,7 +140,7 @@ class CameraActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Utils.REQUEST_CODE_PERMISSIONS) {
-            if (Utils.allPermissionsGranted(baseContext)) {
+            if (Utils.allPermissionsGranted(this)) {
                 startCamera()
             } else {
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)

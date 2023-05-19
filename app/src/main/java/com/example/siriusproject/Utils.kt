@@ -7,9 +7,9 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 
 object Utils {
-    fun allPermissionsGranted(baseContext: Context) = REQUIRED_PERMISSIONS.all {
+    fun allPermissionsGranted(context: Context) = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            baseContext, it
+            context, it
         ) == PackageManager.PERMISSION_GRANTED
     }
 
