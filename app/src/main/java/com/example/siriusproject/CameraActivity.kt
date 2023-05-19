@@ -1,8 +1,6 @@
 package com.example.siriusproject
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -20,6 +18,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File

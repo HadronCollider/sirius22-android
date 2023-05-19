@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
+import com.example.siriusproject.boofcv.MultiViewStereoActivity
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
 import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
