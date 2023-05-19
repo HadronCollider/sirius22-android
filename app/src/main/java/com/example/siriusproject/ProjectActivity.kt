@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
+import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.boofcv.DemoMain
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
@@ -41,7 +42,6 @@ class ProjectActivity : AppCompatActivity() {
     private var allImages: MutableList<Uri> = mutableListOf()
     private lateinit var adapter: ImageAdapter
 
-    private val qualityOfImages = 100   // качество изображений для построения модели
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +62,10 @@ class ProjectActivity : AppCompatActivity() {
         }
         val addImage = findViewById<Button>(R.id.add_images)
         addImage.setOnClickListener {
+            if (allImages.size >= Constants.MAX_COUNT_OF_IMAGES) {
+                Toast.makeText(this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
@@ -70,6 +74,7 @@ class ProjectActivity : AppCompatActivity() {
         val cameraActivity = Intent(this, CameraActivity::class.java)
         viewBinding.openCamera.setOnClickListener {
             cameraActivity.putExtra(this.getString(R.string.path_to_dir), dirOfThisProject)
+            cameraActivity.putExtra(this.getString(R.string.now_count_of_images), allImages.size)
             startActivity(cameraActivity)
         }
 
@@ -114,6 +119,7 @@ class ProjectActivity : AppCompatActivity() {
                 result = file.delete() && result == true
                 if (result == true) {
                     allImages.remove(image)
+                    adapter.deleteBimap(image.toFile().name)
                     adapter.data = allImages
                 } else {
                     Toast.makeText(
