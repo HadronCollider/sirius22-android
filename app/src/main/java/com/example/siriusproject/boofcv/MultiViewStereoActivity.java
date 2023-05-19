@@ -99,6 +99,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 /**
  * Provides a UI for collecting images for use in Multi View Stereo
  */
+
 public class MultiViewStereoActivity extends DemoCamera2Activity
         implements AdapterView.OnItemSelectedListener, PopupMenu.OnMenuItemClickListener {
     // TODO Add help button that takes you to a website/youtube video
@@ -209,15 +210,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     public static File getExternalDirectory(Activity activity) {
-        // if possible use a public directory. If that fails use a private one
-//		if(Objects.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)) {
-//			File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-//			if( !dir.exists() )
-//				dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-//			return new File(dir,"org.boofcv.android");
-//		} else {
         return activity.getExternalFilesDir(null);
-//		}
     }
 
     @Override
@@ -288,10 +281,13 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     }
 
     @Override
-    public void createNewProcessor() { setProcessing(new MvsProcessing());  }
+    public void createNewProcessor() {
+        setProcessing(new MvsProcessing());
+    }
 
     @Override
     protected void onStop() {
+
         super.onStop();
         Log.i(TAG, "ENTER onStop()");
 
@@ -374,6 +370,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
     public void loadImgsPressed(View view) {
         loadImgsImpl(); // Загружаем снимки из проекта в память активности
     }
+
     public void pausePlayPressed(View view) {
         paused = !paused; // Ставим получение снимков из сторонней камеры на паузу
     }
@@ -848,8 +845,12 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                     selector.getSelectedFrames().size > 1) {
                 warningText = "";
                 switch (selector.getCause()) {
-                    case EXCESSIVE_MOTION: warningText = "Translate! Do Not Rotate!"; break;
-                    case TRACKING_FAILURE: warningText = "Tracking Problems"; break;
+                    case EXCESSIVE_MOTION:
+                        warningText = "Translate! Do Not Rotate!";
+                        break;
+                    case TRACKING_FAILURE:
+                        warningText = "Tracking Problems";
+                        break;
                 }
                 if (!warningText.isEmpty()) {
                     warningTimeOut = System.currentTimeMillis() + 2_000;
@@ -893,8 +894,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
                         dbCams.addView(imageFiles.size() + "", 0);
 
                         File dest = new File(workingDir, String.format( //сохраняем изображения, сделанные сторонней камерой, в наш проект (шаблон: i.jpg, где i - номер снимка)
-                                Locale.getDefault(), "%d.jpg",
-                                imageFiles.size()+1));
+                                Locale.getDefault(), "%d.jpg", imageFiles.size() + 1));
                         try {
                             FileOutputStream fos = new FileOutputStream(dest);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -1146,7 +1146,7 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
 
             Log.i(TAG, "Creating MVS Graph");
             TIntObjectMap<String> viewToId = new TIntObjectHashMap<>();
-            BoofMiscOps.forIdx(working.listViews, ( workIdxI, wv ) -> viewToId.put(wv.index, wv.pview.id));
+            BoofMiscOps.forIdx(working.listViews, (workIdxI, wv) -> viewToId.put(wv.index, wv.pview.id));
             try {
                 if (!sparseToDense.process(scene, viewToId, imageLookup))
                     throw new RuntimeException("Dense reconstruction failed!");
@@ -1199,11 +1199,10 @@ public class MultiViewStereoActivity extends DemoCamera2Activity
         // Save the dense cloud to disk
         try {
             OutputStream output = new FileOutputStream(new File(workingDir, "dense_cloud.ply"));
-            PointCloudIO.save3D(PointCloudIO.Format.PLY,
-                    PointCloudReader.wrap3FRGB(cloudShow.points.data, cloudShow.colors.data, 0, cloudMvs.size()),
-                    true, output);
+            PointCloudIO.save3D(PointCloudIO.Format.PLY, PointCloudReader.wrap3FRGB(cloudShow.points.data, cloudShow.colors.data, 0, cloudMvs.size()), true, output);
             output.close();
-        } catch (IOException ignore) {}
+        } catch (IOException ignore) {
+        }
 
         // Show the results
         runOnUiThread(cloudShow::finalizePoints);

@@ -171,7 +171,7 @@ public abstract class DemoCamera2Activity extends VisualizeCamera2Activity {
 
     @Override
     protected boolean selectCamera(String cameraId, CameraCharacteristics characteristics) {
-        return cameraId.equals(app.preference.cameraId);
+        return true;
     }
 
     @Override
