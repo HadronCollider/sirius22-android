@@ -1,12 +1,9 @@
 package com.example.siriusproject
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +17,10 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
+import androidx.exifinterface.media.ExifInterface
+import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
+import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File
@@ -38,8 +39,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
-    private val qualityOfImages =
-        90            // используется при сохранении изображения от 0 до 100
+    private var nowCountOfImages = 0
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -70,17 +70,27 @@ class CameraActivity : AppCompatActivity() {
 
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
+        nowCountOfImages = arguments?.getInt(this.getString(R.string.now_count_of_images))!!
 
-        if (allPermissionsGranted()) {
+
+        if (Utils.allPermissionsGranted(this)) {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                this, Utils.REQUIRED_PERMISSIONS, Utils.REQUEST_CODE_PERMISSIONS
             )
         }
 
         pathToDir = File(this.filesDir.absolutePath.toString() + "/")
-        viewBinding.imageCaptureButton.setOnClickListener { takePhoto() }
+        viewBinding.imageCaptureButton.setOnClickListener {
+            if (nowCountOfImages >= MAX_COUNT_OF_IMAGES) {
+                Toast.makeText(
+                    this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            takePhoto()
+        }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -107,6 +117,7 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Log.d(TAG, msg)
                     output.savedUri?.let { rotateImage(it) }
+                    nowCountOfImages++
                 }
             })
     }
@@ -136,31 +147,18 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it
-        ) == PackageManager.PERMISSION_GRANTED
-    }
 
     companion object {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-ss-SSS"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = mutableListOf(
-            Manifest.permission.CAMERA
-        ).apply {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
-        }.toTypedArray()
     }
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
+        if (requestCode == Utils.REQUEST_CODE_PERMISSIONS) {
+            if (Utils.allPermissionsGranted(this)) {
                 startCamera()
             } else {
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
@@ -186,10 +184,16 @@ class CameraActivity : AppCompatActivity() {
         val matrix = Matrix()
         matrix.postRotate(rotate.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
-        val file = image.path?.let { File(it) }
-        val os = BufferedOutputStream(FileOutputStream(file))
+        var smallerBitmap = bitmap
+        var file = image.path?.let { File(it) }
+        var os = BufferedOutputStream(FileOutputStream(file))
         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
+        os.close()
+
+        file = File(allFilesDir + "img/" + image.toFile().name)
+        os = BufferedOutputStream(FileOutputStream(file))
+        smallerBitmap = Utils.compressImage(bitmap)
+        smallerBitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
         os.close()
     }
 
@@ -203,5 +207,6 @@ class CameraActivity : AppCompatActivity() {
         super.onStop()
         orientationEventListener.disable()
     }
+
 
 }

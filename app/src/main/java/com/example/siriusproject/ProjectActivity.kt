@@ -11,8 +11,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
+import com.example.siriusproject.boofcv.MultiViewStereoActivity
+import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.boofcv.DemoMain
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
@@ -30,43 +34,50 @@ class ProjectActivity : AppCompatActivity() {
     private var data = ProjectData(1, "", Calendar.getInstance().time)
     private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
+    private lateinit var dirOfSmallImages: String
     private var galleryRequest = 1
 
     private var allImages: MutableList<Uri> = mutableListOf()
     private lateinit var adapter: ImageAdapter
 
-    private val qualityOfImages =
-        90            // используется при сохранении изображения от 0 до 100
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityProjectBinding.inflate(layoutInflater)
+        toolbarBinding = ToolbarActivityProjectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-
-        viewBinding.topAppBar.setNavigationOnClickListener {
-            this.finish()
+        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        supportActionBar?.customView = toolbarBinding.root
+        toolbarBinding.backButton.setOnClickListener {
+            this@ProjectActivity.finish()
         }
 
         viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.build_model -> {
-                    // TODO: Добавить проверку на доступность камеры
-                    val intent = Intent(this, DemoMain::class.java)
-                    intent.putExtra("project_path", dirOfThisProject)
-                    startActivity(intent)
+                    if (Utils.allPermissionsGranted(this)) {
+                        startBuildingActivity()
+                    } else {
+                        ActivityCompat.requestPermissions(
+                            this, Utils.REQUIRED_PERMISSIONS, Utils.REQUEST_CODE_PERMISSIONS
+                        )
+                    }
                     true
                 }
                 R.id.settings -> {
                     Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
                     true
                 }
-
                 else -> false
             }
         }
 
         viewBinding.addImages.setOnClickListener {
+            if (allImages.size >= Constants.MAX_COUNT_OF_IMAGES) {
+                Toast.makeText(this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, galleryRequest)
@@ -75,6 +86,7 @@ class ProjectActivity : AppCompatActivity() {
         val cameraActivity = Intent(this, CameraActivity::class.java)
         viewBinding.openCamera.setOnClickListener {
             cameraActivity.putExtra(this.getString(R.string.path_to_dir), dirOfThisProject)
+            cameraActivity.putExtra(this.getString(R.string.now_count_of_images), allImages.size)
             startActivity(cameraActivity)
         }
 
@@ -94,8 +106,10 @@ class ProjectActivity : AppCompatActivity() {
         }
         viewBinding.topAppBar.title = data.name
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
+        dirOfSmallImages = dirOfThisProject + "img/"
         try {
             Files.createDirectory(Paths.get(dirOfThisProject))
+            Files.createDirectory(Paths.get(dirOfSmallImages))
         } catch (e: IOException) {
             Log.d("files", "can't make a new directory")
         }
@@ -111,15 +125,13 @@ class ProjectActivity : AppCompatActivity() {
             }
 
             override fun onRemove(image: Uri) {
-                val file = image.path?.let { File(it) }
-                val result = file?.delete()
+                var file = image.path?.let { File(it) }
+                var result = file?.delete()
+                file = File(dirOfSmallImages + image.toFile().name)
+                result = file.delete() && result == true
                 if (result == true) {
-                    Toast.makeText(
-                        this@ProjectActivity,
-                        this@ProjectActivity.getString(R.string.delete_s),
-                        Toast.LENGTH_SHORT
-                    ).show()
                     allImages.remove(image)
+                    adapter.deleteBimap(image.toFile().name)
                     adapter.data = allImages
                 } else {
                     Toast.makeText(
@@ -130,7 +142,7 @@ class ProjectActivity : AppCompatActivity() {
                 }
 
             }
-        })
+        }, dirOfThisProject)
         adapter.data = allImages
         viewBinding.imageList.adapter = adapter
     }
@@ -179,18 +191,24 @@ class ProjectActivity : AppCompatActivity() {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
                         bitmap = rotateImage(bitmap, selectedImage)
                         val imageName = Calendar.getInstance().timeInMillis.toString() + ".jpeg"
-                        val file = File(
+                        var file = File(
                             dirOfThisProject, imageName
                         )
-                        val os = BufferedOutputStream(FileOutputStream(file))
+                        var os = BufferedOutputStream(FileOutputStream(file))
                         bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
                         os.close()
-
                         if (selectedImage != null) {
                             allImages.add(file.toUri())
                             adapter.data = allImages
 
                         }
+                        file = File(dirOfSmallImages, imageName)
+                        os = BufferedOutputStream(FileOutputStream(file))
+                        bitmap = Utils.compressImage(bitmap)
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
+                        os.close()
+
+
                         viewBinding.imageList.adapter = adapter
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -202,7 +220,7 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun getAllImages() {
         allImages.clear()
-        File("/$dirOfThisProject").walk().forEach {
+        File(dirOfThisProject).walk().forEach {
             if ((it.path.toString()
                     .endsWith(".jpeg") || it.path.endsWith(".jpg") || it.path.endsWith(".png")) &&
                         checkThePositionOfFile(it.path.toString())
@@ -241,5 +259,25 @@ class ProjectActivity : AppCompatActivity() {
             bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
         )
 
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Utils.REQUEST_CODE_PERMISSIONS) {
+            if (Utils.allPermissionsGranted(this)) {
+                startBuildingActivity()
+            } else {
+                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    private fun startBuildingActivity() {
+        val intent = Intent(this, MultiViewStereoActivity::class.java)
+        intent.putExtra("project_path", dirOfThisProject)
+        startActivity(intent)
     }
 }
