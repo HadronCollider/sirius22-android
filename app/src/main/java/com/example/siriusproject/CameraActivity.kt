@@ -34,6 +34,7 @@ import java.util.concurrent.Executors
 class CameraActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityCameraBinding
+
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
@@ -62,6 +63,10 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
+        viewBinding.topAppBar.setNavigationOnClickListener {
+            this.finish()
+        }
 
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()

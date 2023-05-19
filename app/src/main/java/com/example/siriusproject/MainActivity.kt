@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.ActionBar
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityMainBinding
 
@@ -19,8 +18,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.setCustomView(R.layout.toolbar_main)
         val newProjectActivity = Intent(this, NewProject::class.java)
         viewBinding.newProject.setOnClickListener {
             startActivity(newProjectActivity)
@@ -32,6 +29,7 @@ class MainActivity : AppCompatActivity() {
                 projectActivity.putExtra(this@MainActivity.getString(R.string.id_type), project.id)
                 startActivity(projectActivity)
             }
+
             override fun onRemove(project: ProjectData) {
                 val result = projectsData.removeProject(project.id)
                 if (!result) {

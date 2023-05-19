@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/build_model"
+        android:icon="@drawable/build_model"
+        android:title="@string/build_model"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/scaled_settings"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom"
+        />
+
+</menu>

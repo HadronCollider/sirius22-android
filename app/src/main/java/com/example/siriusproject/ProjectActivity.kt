@@ -8,10 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toFile
@@ -22,7 +20,6 @@ import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.boofcv.DemoMain
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
-import com.example.siriusproject.databinding.ToolbarActivityProjectBinding
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -34,8 +31,7 @@ import java.util.*
 class ProjectActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityProjectBinding
-    private lateinit var toolbarBinding: ToolbarActivityProjectBinding
-    private var data = ProjectData(1, "", 0, Calendar.getInstance().time)
+    private var data = ProjectData(1, "", Calendar.getInstance().time)
     private lateinit var allData: ReadProjectData
     private lateinit var dirOfThisProject: String
     private lateinit var dirOfSmallImages: String
@@ -56,17 +52,28 @@ class ProjectActivity : AppCompatActivity() {
         toolbarBinding.backButton.setOnClickListener {
             this@ProjectActivity.finish()
         }
-        toolbarBinding.iconsNavig.setOnClickListener {
-            if (Utils.allPermissionsGranted(this)) {
-                startBuildingActivity()
-            } else {
-                ActivityCompat.requestPermissions(
-                    this, Utils.REQUIRED_PERMISSIONS, Utils.REQUEST_CODE_PERMISSIONS
-                )
+
+        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.build_model -> {
+                    if (Utils.allPermissionsGranted(this)) {
+                        startBuildingActivity()
+                    } else {
+                        ActivityCompat.requestPermissions(
+                            this, Utils.REQUIRED_PERMISSIONS, Utils.REQUEST_CODE_PERMISSIONS
+                        )
+                    }
+                    true
+                }
+                R.id.settings -> {
+                    Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
             }
         }
-        val addImage = findViewById<Button>(R.id.add_images)
-        addImage.setOnClickListener {
+
+        viewBinding.addImages.setOnClickListener {
             if (allImages.size >= Constants.MAX_COUNT_OF_IMAGES) {
                 Toast.makeText(this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -97,7 +104,7 @@ class ProjectActivity : AppCompatActivity() {
                 writeNewData(arguments)
             }
         }
-        toolbarBinding.pageTitle.text = data.name
+        viewBinding.topAppBar.title = data.name
         dirOfThisProject = this.filesDir.absolutePath + data.name + data.id + "/"
         dirOfSmallImages = dirOfThisProject + "img/"
         try {
@@ -142,7 +149,6 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun writeNewData(arguments: Bundle) {
         data.name = arguments.getString(this.getString(R.string.name_type)).toString()
-        data.quality = arguments.getShort(R.string.quality_type.toString())
         data.id = allData.getLastId()
         allData.writeData(data)
     }

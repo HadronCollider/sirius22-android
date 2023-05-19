@@ -4,7 +4,7 @@
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="TODO_title">Выбор проекта</string>
+    <string name="main_title">Выбор проекта</string>
     <string name="older">Предыдущие проеты</string>
     <string name="new_project">Новый проект</string>
     <string name="label">Имя проекта</string>
@@ -28,6 +28,10 @@
     <string name="delete_s">deleted successfully</string>
     <string name="delete_f">can\'t find the image</string>
     <string name="path_to_dir">path_to_dir</string>
+    <string name="go_back">go back</string>
+    <string name="build_model">build model</string>
+    <string name="settings">settings</string>
+    <string name="image">image</string>
     <string name="count_of_images">Too many images</string>
     <string name="now_count_of_images">now_count_of_images</string>
 
