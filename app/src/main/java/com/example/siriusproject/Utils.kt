@@ -5,8 +5,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
+import android.graphics.Bitmap
 
 object Utils {
+
+    val REQUEST_CODE_PERMISSIONS = 10
+
     fun allPermissionsGranted(context: Context) = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             context, it
@@ -21,5 +25,13 @@ object Utils {
         }
     }.toTypedArray()
 
-    val REQUEST_CODE_PERMISSIONS = 10
+
+    fun compressImage(bitmap: Bitmap): Bitmap {
+        var height = bitmap.height
+        var width = bitmap.width
+        val smallerIn = 5           // во столько раз маленткое изобарежние меньше основного
+        height /= smallerIn
+        width /= smallerIn
+        return Bitmap.createScaledBitmap(bitmap, width, height, true)
+    }
 }
