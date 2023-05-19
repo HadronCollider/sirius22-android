@@ -1,6 +1,8 @@
 package com.example.siriusproject
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -19,6 +21,9 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
+import androidx.exifinterface.media.ExifInterface
+import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
+import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File
@@ -36,7 +41,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
-    private val qualityOfImages = 100       // качество изображений для построения модели
+    private var nowCountOfImages = 0
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -63,6 +68,8 @@ class CameraActivity : AppCompatActivity() {
 
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
+        nowCountOfImages = arguments?.getInt(this.getString(R.string.now_count_of_images))!!
+
 
         if (Utils.allPermissionsGranted(this)) {
             startCamera()
@@ -73,7 +80,15 @@ class CameraActivity : AppCompatActivity() {
         }
 
         pathToDir = File(this.filesDir.absolutePath.toString() + "/")
-        viewBinding.imageCaptureButton.setOnClickListener { takePhoto() }
+        viewBinding.imageCaptureButton.setOnClickListener {
+            if (nowCountOfImages >= MAX_COUNT_OF_IMAGES) {
+                Toast.makeText(
+                    this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            takePhoto()
+        }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -100,6 +115,7 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Log.d(TAG, msg)
                     output.savedUri?.let { rotateImage(it) }
+                    nowCountOfImages++
                 }
             })
     }
@@ -189,5 +205,6 @@ class CameraActivity : AppCompatActivity() {
         super.onStop()
         orientationEventListener.disable()
     }
+
 
 }
