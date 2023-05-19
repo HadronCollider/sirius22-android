@@ -40,7 +40,9 @@
         android:gravity="top"
         android:hint="@string/input"
         android:lineSpacingExtra="-1sp"
-        android:textAppearance="@style/input" />
+        android:textAppearance="@style/input"
+        android:autofillHints="name"
+        android:inputType="text" />
 
 
     <Button
