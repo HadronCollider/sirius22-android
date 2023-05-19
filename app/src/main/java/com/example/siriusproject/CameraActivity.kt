@@ -21,6 +21,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.exifinterface.media.ExifInterface
+import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
+import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File
@@ -38,7 +40,6 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
-    private val qualityOfImages = 100       // качество изображений для построения модели
     private var nowCountOfImages = 0
 
     private val orientationEventListener by lazy {
@@ -79,7 +80,7 @@ class CameraActivity : AppCompatActivity() {
 
         pathToDir = File(this.filesDir.absolutePath.toString() + "/")
         viewBinding.imageCaptureButton.setOnClickListener {
-            if (nowCountOfImages >= Utils.MAX_COUNT_OF_IMAGES) {
+            if (nowCountOfImages >= MAX_COUNT_OF_IMAGES) {
                 Toast.makeText(
                     this, this.getString(R.string.count_of_images), Toast.LENGTH_SHORT
                 ).show()
