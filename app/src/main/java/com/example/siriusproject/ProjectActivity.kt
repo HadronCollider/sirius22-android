@@ -17,7 +17,6 @@ import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.boofcv.MultiViewStereoActivity
 import com.example.siriusproject.Constants.qualityOfImages
-import com.example.siriusproject.boofcv.DemoMain
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityProjectBinding
 import java.io.BufferedOutputStream
@@ -45,11 +44,8 @@ class ProjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityProjectBinding.inflate(layoutInflater)
-        toolbarBinding = ToolbarActivityProjectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.customView = toolbarBinding.root
-        toolbarBinding.backButton.setOnClickListener {
+        viewBinding.topAppBar.setNavigationOnClickListener {
             this@ProjectActivity.finish()
         }
 
