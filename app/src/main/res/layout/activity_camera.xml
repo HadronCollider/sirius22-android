@@ -35,8 +35,8 @@
         android:id="@+id/last_img_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
         android:checked="true"
         android:switchMinWidth="56dp"
         android:text="@string/preview_last_img"
@@ -55,9 +55,9 @@
         android:id="@+id/image_capture_button"
         android:layout_width="70dp"
         android:layout_height="60dp"
-        android:src="@drawable/camera_button"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="10dp"
-        android:contentDescription="@string/capture" />
+        android:contentDescription="@string/capture"
+        android:src="@drawable/camera_button" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

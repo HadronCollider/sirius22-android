@@ -40,6 +40,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
     private var nowCountOfImages = 0
+    private var showLastImgPreview = false
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -66,6 +67,11 @@ class CameraActivity : AppCompatActivity() {
 
         viewBinding.topAppBar.setNavigationOnClickListener {
             this.finish()
+        }
+
+        viewBinding.lastImgPreview.isChecked = false
+        viewBinding.lastImgPreview.setOnCheckedChangeListener { _, isChecked ->
+            showLastImgPreview = isChecked
         }
 
         val arguments = intent.extras
