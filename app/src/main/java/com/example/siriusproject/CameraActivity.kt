@@ -68,7 +68,7 @@ class CameraActivity : AppCompatActivity() {
         viewBinding.topAppBar.setNavigationOnClickListener {
             this.finish()
         }
-
+        viewBinding.lastImg.imageAlpha = 100
         viewBinding.lastImgPreview.isChecked = false
         viewBinding.lastImgPreview.setOnCheckedChangeListener { _, isChecked ->
             showLastImgPreview = isChecked
@@ -186,10 +186,12 @@ class CameraActivity : AppCompatActivity() {
             else -> 0
         }
         var bitmap = BitmapFactory.decodeFile(image.path)
-
         val matrix = Matrix()
         matrix.postRotate(rotate.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+        viewBinding.lastImg.setImageBitmap(bitmap)
+
         var smallerBitmap = bitmap
         var file = image.path?.let { File(it) }
         var os = BufferedOutputStream(FileOutputStream(file))
