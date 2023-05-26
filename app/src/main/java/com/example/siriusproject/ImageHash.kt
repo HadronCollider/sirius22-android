@@ -78,4 +78,15 @@ object ImageHash {
         }
         return sumOfPixels / (distMat.height() * distMat.width()).toDouble()
     }
+
+    // функция для подсчёта отличия 2 изображений
+    fun hammingDistance(firstString: String, secondString: String): Int {
+        var count = 0
+        for (i in 0 until Math.min(firstString.length, secondString.length)) {
+            if (firstString[i] != secondString[i]) {
+                count++
+            }
+        }
+        return count
+    }
 }
