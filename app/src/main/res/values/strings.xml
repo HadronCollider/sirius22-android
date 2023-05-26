@@ -37,6 +37,7 @@
     <string name="off">OFF</string>
     <string name="on">ON</string>
     <string name="preview_last_img">Preview last img</string>
+    <string name="last_img">last_img</string>
 
     <string-array name="mvs_views">
         <item>Debug</item>

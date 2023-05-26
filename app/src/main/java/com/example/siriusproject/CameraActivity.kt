@@ -8,8 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.Surface.*
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -41,6 +43,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var allFilesDir: String
     private var nowCountOfImages = 0
     private var showLastImgPreview = false
+    private var lastImg: Bitmap? = null
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -69,10 +72,16 @@ class CameraActivity : AppCompatActivity() {
             this.finish()
         }
         viewBinding.lastImg.imageAlpha = 100
-        viewBinding.lastImgPreview.isChecked = false
-        viewBinding.lastImgPreview.setOnCheckedChangeListener { _, isChecked ->
-            showLastImgPreview = isChecked
-        }
+
+        viewBinding.previewImg.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> viewBinding.lastImg.setImageBitmap(lastImg)
+                else -> viewBinding.lastImg.setImageBitmap(null)
+            }
+            return@OnTouchListener true
+
+        })
+
 
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
@@ -190,8 +199,13 @@ class CameraActivity : AppCompatActivity() {
         matrix.postRotate(rotate.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
-        viewBinding.lastImg.setImageBitmap(bitmap)
+        lastImg = bitmap
 
+        if (showLastImgPreview) {
+            viewBinding.lastImg.setImageBitmap(bitmap)
+        } else {
+            viewBinding.lastImg.setImageBitmap(null)
+        }
         var smallerBitmap = bitmap
         var file = image.path?.let { File(it) }
         var os = BufferedOutputStream(FileOutputStream(file))

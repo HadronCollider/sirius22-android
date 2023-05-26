@@ -28,7 +28,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0">
+
+    </androidx.camera.view.PreviewView>
 
     <ImageView
         android:id="@+id/last_img"
@@ -43,25 +45,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/last_img_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:checked="true"
-        android:switchMinWidth="56dp"
-        android:text="@string/preview_last_img"
-        android:textColor="#000000"
-        android:textOff="@string/off"
-        android:textOn="@string/on" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_center_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".50" />
+
+    <ImageButton
+        android:id="@+id/preview_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="70dp"
+        android:layout_marginBottom="7dp"
+        android:contentDescription="@string/preview_last_img"
+        android:src="@drawable/preview_icon" />
 
     <ImageButton
         android:id="@+id/image_capture_button"
