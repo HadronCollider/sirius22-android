@@ -23,6 +23,7 @@ import androidx.core.net.toFile
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
 import com.example.siriusproject.Constants.qualityOfImages
+import com.example.siriusproject.data.ImageHash
 import com.example.siriusproject.databinding.ActivityCameraBinding
 import java.io.BufferedOutputStream
 import java.io.File
@@ -198,6 +199,10 @@ class CameraActivity : AppCompatActivity() {
         val matrix = Matrix()
         matrix.postRotate(rotate.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+        if (lastImg != null) {
+            Log.d(TAG, ImageHash.getPerceptualHash(lastImg!!) + ImageHash.getPerceptualHash(bitmap))
+        }
 
         lastImg = bitmap
 
