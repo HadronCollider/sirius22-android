@@ -19,6 +19,8 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toFile
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
@@ -32,6 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.concurrent.thread
 
 
 class CameraActivity : AppCompatActivity() {
@@ -45,6 +48,7 @@ class CameraActivity : AppCompatActivity() {
     private var nowCountOfImages = 0
     private var showLastImgPreview = false
     private var lastImg: Bitmap? = null
+    private lateinit var checkSimilarityThread: CheckSimilarityThread
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -74,10 +78,11 @@ class CameraActivity : AppCompatActivity() {
         }
         viewBinding.lastImg.imageAlpha = 100
 
+
         viewBinding.previewImg.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> viewBinding.lastImg.setImageBitmap(lastImg)
-                else -> viewBinding.lastImg.setImageBitmap(null)
+                MotionEvent.ACTION_DOWN -> viewBinding.lastImg.visibility = View.VISIBLE
+                else -> viewBinding.lastImg.visibility = View.GONE
             }
             return@OnTouchListener true
 
@@ -108,6 +113,7 @@ class CameraActivity : AppCompatActivity() {
             takePhoto()
         }
         cameraExecutor = Executors.newSingleThreadExecutor()
+        checkSimilarityThread = CheckSimilarityThread(viewBinding.viewFinder, viewBinding.lastImg)
     }
 
     @SuppressLint("RestrictedApi")
@@ -161,6 +167,26 @@ class CameraActivity : AppCompatActivity() {
             }
 
         }, ContextCompat.getMainExecutor(this))
+        //checkSimilarityThread.start()
+        thread {
+            val redBorder = 0.4
+            val yellowBorder = 0.6
+            while (true) {
+                if(viewBinding.lastImg.drawable == null && viewBinding.viewFinder.bitmap == null) continue
+                val similarity = ImageHash.calcPercentSimilarImagesByHash(
+                    ImageHash.getPerceptualHash(viewBinding.viewFinder.bitmap!!),
+                    ImageHash.getPerceptualHash(viewBinding.lastImg.drawable.toBitmap())
+                )
+
+                if (similarity <= redBorder) {
+                    viewBinding.lastImg.background = R.drawable.red_border.toDrawable()
+                } else if (similarity <= yellowBorder) {
+                    viewBinding.lastImg.background = R.drawable.yellow_border.toDrawable()
+                } else {
+                    viewBinding.lastImg.background = R.drawable.green_border.toDrawable()
+                }
+            }
+        }
     }
 
 
@@ -201,16 +227,14 @@ class CameraActivity : AppCompatActivity() {
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
         if (lastImg != null) {
-            Log.d(TAG, ImageHash.getPerceptualHash(lastImg!!) + ImageHash.getPerceptualHash(bitmap))
+            Log.d(
+                TAG, ImageHash.calcPercentSimilarImagesByHash(
+                    ImageHash.getPerceptualHash(lastImg!!), ImageHash.getPerceptualHash(bitmap)
+                ).toString()
+            )
         }
-
         lastImg = bitmap
-
-        if (showLastImgPreview) {
-            viewBinding.lastImg.setImageBitmap(bitmap)
-        } else {
-            viewBinding.lastImg.setImageBitmap(null)
-        }
+        viewBinding.lastImg.setImageBitmap(bitmap)
         var smallerBitmap = bitmap
         var file = image.path?.let { File(it) }
         var os = BufferedOutputStream(FileOutputStream(file))
