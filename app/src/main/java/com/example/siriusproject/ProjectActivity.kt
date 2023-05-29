@@ -109,8 +109,11 @@ class ProjectActivity : AppCompatActivity() {
         } catch (e: IOException) {
             Log.d("files", "can't make a new directory")
         }
-        getAllImages()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        getAllImages()
         adapter = ImageAdapter(object : ImageActionListener {
             override fun onClicked(image: Uri) {
                 val imageActivity = Intent(this@ProjectActivity, ImageActivity::class.java)
@@ -141,6 +144,7 @@ class ProjectActivity : AppCompatActivity() {
         }, dirOfThisProject)
         adapter.data = allImages
         viewBinding.imageList.adapter = adapter
+
     }
 
     private fun writeNewData(arguments: Bundle) {

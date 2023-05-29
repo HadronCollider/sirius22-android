@@ -11,7 +11,12 @@ import android.view.ViewGroup
 import androidx.core.net.toFile
 import androidx.recyclerview.widget.RecyclerView
 import com.example.siriusproject.Constants
+import com.example.siriusproject.Constants.qualityOfImages
+import com.example.siriusproject.Utils
 import com.example.siriusproject.databinding.OneImageBinding
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 class ImageAdapter(private val imageActionListener: ImageActionListener, private val pathToDir: String) :
     RecyclerView.Adapter<ImageAdapter.ImageViewHolder>(), View.OnClickListener {
@@ -43,8 +48,18 @@ class ImageAdapter(private val imageActionListener: ImageActionListener, private
         with(holder.binding) {
             imageName.text = name
             var imageBitmap: Bitmap? = imageBitmaps.get(name)
+            val pathToSmallImg = pathToDir + "img/" + name
             if (imageBitmap == null) {
-                imageBitmap =  BitmapFactory.decodeFile(pathToDir + "img/" + name)
+                if (!File(pathToSmallImg).exists()) {
+                    val bigBitmap = BitmapFactory.decodeFile(pathToDir + name)
+                    val smallImg = File(pathToSmallImg)
+                    val os = BufferedOutputStream(FileOutputStream(smallImg))
+                    imageBitmap = Utils.compressImage(bigBitmap)
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, qualityOfImages, os)
+                    os.close()
+                } else {
+                    imageBitmap = BitmapFactory.decodeFile(pathToSmallImg)
+                }
                 imageBitmaps.put(name, imageBitmap)
             }
 
