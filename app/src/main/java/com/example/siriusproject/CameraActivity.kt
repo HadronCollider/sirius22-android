@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
 import com.example.siriusproject.Constants.qualityOfImages
 import com.example.siriusproject.data.ImageHash
 import com.example.siriusproject.databinding.ActivityCameraBinding
+import kotlinx.coroutines.*
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -34,7 +36,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.concurrent.thread
 
 
 class CameraActivity : AppCompatActivity() {
@@ -46,9 +47,10 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
     private var nowCountOfImages = 0
-    private var showLastImgPreview = false
     private var lastImg: Bitmap? = null
     private lateinit var checkSimilarityThread: CheckSimilarityThread
+
+    private val checkSimilarity = CoroutineScope(Dispatchers.Default)
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -67,6 +69,7 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,8 +84,44 @@ class CameraActivity : AppCompatActivity() {
 
         viewBinding.previewImg.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> viewBinding.lastImg.visibility = View.VISIBLE
-                else -> viewBinding.lastImg.visibility = View.GONE
+                MotionEvent.ACTION_DOWN -> {
+                    viewBinding.lastImg.visibility = View.VISIBLE
+                    checkSimilarity.launch {
+                        if (isActive) {
+                            while (true) {
+                                val redBorder = 0.4
+                                val yellowBorder = 0.6
+                                val nowBitmap = withContext(Dispatchers.Main) {
+                                    return@withContext viewBinding.viewFinder.bitmap
+                                }
+                                val lastBitmap = withContext(Dispatchers.Main) {
+                                    viewBinding.lastImg.drawable.toBitmap()
+                                }
+                                if (nowBitmap != null) {
+                                    val similarity = ImageHash.calcPercentSimilarImagesByHash(
+                                        ImageHash.getPerceptualHash(nowBitmap),
+                                        ImageHash.getPerceptualHash(lastBitmap)
+                                    )
+                                    var typeOfBorder: Drawable
+                                    if (similarity <= redBorder) {
+                                        typeOfBorder = R.drawable.red_border.toDrawable()
+                                    } else if (similarity <= yellowBorder) {
+                                        typeOfBorder = R.drawable.yellow_border.toDrawable()
+                                    } else {
+                                        typeOfBorder = R.drawable.green_border.toDrawable()
+                                    }
+                                    withContext(Dispatchers.Main) {
+                                        viewBinding.lastImg.background = typeOfBorder
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    viewBinding.lastImg.visibility = View.GONE
+                    checkSimilarity.cancel()
+                }
             }
             return@OnTouchListener true
 
@@ -167,26 +206,6 @@ class CameraActivity : AppCompatActivity() {
             }
 
         }, ContextCompat.getMainExecutor(this))
-        //checkSimilarityThread.start()
-        thread {
-            val redBorder = 0.4
-            val yellowBorder = 0.6
-            while (true) {
-                if(viewBinding.lastImg.drawable == null && viewBinding.viewFinder.bitmap == null) continue
-                val similarity = ImageHash.calcPercentSimilarImagesByHash(
-                    ImageHash.getPerceptualHash(viewBinding.viewFinder.bitmap!!),
-                    ImageHash.getPerceptualHash(viewBinding.lastImg.drawable.toBitmap())
-                )
-
-                if (similarity <= redBorder) {
-                    viewBinding.lastImg.background = R.drawable.red_border.toDrawable()
-                } else if (similarity <= yellowBorder) {
-                    viewBinding.lastImg.background = R.drawable.yellow_border.toDrawable()
-                } else {
-                    viewBinding.lastImg.background = R.drawable.green_border.toDrawable()
-                }
-            }
-        }
     }
 
 
