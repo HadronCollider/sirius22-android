@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.graphics.drawable.Drawable
+import android.graphics.Paint
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RectShape
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,7 +23,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toFile
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
@@ -86,8 +87,13 @@ class CameraActivity : AppCompatActivity() {
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     viewBinding.lastImg.visibility = View.VISIBLE
+                    viewBinding.border.visibility = View.VISIBLE
                     checkSimilarity.launch {
                         if (isActive) {
+                            val shapeDrawable = ShapeDrawable()
+                            shapeDrawable.shape = RectShape()
+                            shapeDrawable.paint.style = Paint.Style.STROKE
+                            shapeDrawable.paint.strokeWidth = 10F
                             while (true) {
                                 val redBorder = 0.4
                                 val yellowBorder = 0.6
@@ -102,16 +108,20 @@ class CameraActivity : AppCompatActivity() {
                                         ImageHash.getPerceptualHash(nowBitmap),
                                         ImageHash.getPerceptualHash(lastBitmap)
                                     )
-                                    var typeOfBorder: Drawable
                                     if (similarity <= redBorder) {
-                                        typeOfBorder = R.drawable.red_border.toDrawable()
+                                        shapeDrawable.paint.color =
+                                            ContextCompat.getColor(this@CameraActivity, R.color.red)
                                     } else if (similarity <= yellowBorder) {
-                                        typeOfBorder = R.drawable.yellow_border.toDrawable()
+                                        shapeDrawable.paint.color = ContextCompat.getColor(
+                                            this@CameraActivity, R.color.yellow
+                                        )
                                     } else {
-                                        typeOfBorder = R.drawable.green_border.toDrawable()
+                                        shapeDrawable.paint.color = ContextCompat.getColor(
+                                            this@CameraActivity, R.color.green
+                                        )
                                     }
                                     withContext(Dispatchers.Main) {
-                                        viewBinding.lastImg.background = typeOfBorder
+                                        viewBinding.border.background = shapeDrawable
                                     }
                                 }
                             }
@@ -120,6 +130,7 @@ class CameraActivity : AppCompatActivity() {
                 }
                 else -> {
                     viewBinding.lastImg.visibility = View.GONE
+                    viewBinding.border.visibility = View.GONE
                     checkSimilarity.cancel()
                 }
             }
