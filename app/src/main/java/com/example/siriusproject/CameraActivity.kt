@@ -49,7 +49,6 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var allFilesDir: String
     private var nowCountOfImages = 0
     private var lastImg: Bitmap? = null
-    private lateinit var checkSimilarityThread: CheckSimilarityThread
 
     private val checkSimilarity = CoroutineScope(Dispatchers.Default)
 
@@ -90,18 +89,19 @@ class CameraActivity : AppCompatActivity() {
                     viewBinding.border.visibility = View.VISIBLE
                     checkSimilarity.launch {
                         if (isActive) {
-                            val shapeDrawable = ShapeDrawable()
-                            shapeDrawable.shape = RectShape()
-                            shapeDrawable.paint.style = Paint.Style.STROKE
-                            shapeDrawable.paint.strokeWidth = 10F
-                            while (true) {
+                            val shapeDrawable = ShapeDrawable().apply {
+                                shape = RectShape()
+                                paint.style = Paint.Style.STROKE
+                                paint.strokeWidth = 10F
+                            }
+                            while (isActive) {
                                 val redBorder = 0.4
                                 val yellowBorder = 0.6
-                                val nowBitmap = withContext(Dispatchers.Main) {
-                                    return@withContext viewBinding.viewFinder.bitmap
-                                }
-                                val lastBitmap = withContext(Dispatchers.Main) {
-                                    viewBinding.lastImg.drawable.toBitmap()
+                                val (nowBitmap, lastBitmap) = withContext(Dispatchers.Main) {
+                                    return@withContext Pair(
+                                        viewBinding.viewFinder.bitmap,
+                                        viewBinding.lastImg.drawable.toBitmap()
+                                    )
                                 }
                                 if (nowBitmap != null) {
                                     val similarity = ImageHash.calcPercentSimilarImagesByHash(
@@ -163,7 +163,6 @@ class CameraActivity : AppCompatActivity() {
             takePhoto()
         }
         cameraExecutor = Executors.newSingleThreadExecutor()
-        checkSimilarityThread = CheckSimilarityThread(viewBinding.viewFinder, viewBinding.lastImg)
     }
 
     @SuppressLint("RestrictedApi")
