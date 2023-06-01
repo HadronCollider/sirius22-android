@@ -98,12 +98,15 @@ class CameraActivity : AppCompatActivity() {
                                 val redBorder = 0.4
                                 val yellowBorder = 0.6
                                 val (nowBitmap, lastBitmap) = withContext(Dispatchers.Main) {
-                                    return@withContext Pair(
-                                        viewBinding.viewFinder.bitmap,
-                                        viewBinding.lastImg.drawable.toBitmap()
-                                    )
+                                    if (viewBinding.lastImg.drawable != null) {
+                                        return@withContext Pair(
+                                            viewBinding.viewFinder.bitmap,
+                                            viewBinding.lastImg.drawable.toBitmap()
+                                        )
+                                    }
+                                    return@withContext Pair(null, null)
                                 }
-                                if (nowBitmap != null) {
+                                if (nowBitmap != null && lastBitmap != null) {
                                     val similarity = ImageHash.calcPercentSimilarImagesByHash(
                                         ImageHash.getPerceptualHash(nowBitmap),
                                         ImageHash.getPerceptualHash(lastBitmap)
@@ -128,7 +131,7 @@ class CameraActivity : AppCompatActivity() {
                         }
                     }
                 }
-                else -> {
+                MotionEvent.ACTION_UP -> {
                     viewBinding.lastImg.visibility = View.GONE
                     viewBinding.border.visibility = View.GONE
                     checkSimilarity.cancel()
