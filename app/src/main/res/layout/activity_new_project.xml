@@ -50,7 +50,7 @@
         android:id="@+id/create_project"
         android:layout_width="140dp"
         android:layout_height="40dp"
-        android:layout_marginTop="393dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/button_bg"
         android:text="@string/new_project_button"
         android:textAppearance="@style/new_project" />
