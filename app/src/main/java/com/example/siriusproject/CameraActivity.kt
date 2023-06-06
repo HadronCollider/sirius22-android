@@ -223,7 +223,7 @@ class CameraActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "CameraXApp"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-ss-SSS"
+        const val FILENAME_FORMAT = "yyyy-MM-dd-HH-ss-SSS"
     }
 
     override fun onRequestPermissionsResult(
