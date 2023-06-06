@@ -49,7 +49,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var allFilesDir: String
     private var nowCountOfImages = 0
     private var lastImg: Bitmap? = null
-    private lateinit var checkSimilarity: CoroutineScope
+    private lateinit var checkSimilarity: Job
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -80,12 +80,13 @@ class CameraActivity : AppCompatActivity() {
         }
         viewBinding.lastImg.imageAlpha = 100
 
-        checkSimilarity = CoroutineScope(Dispatchers.Default)
+
         viewBinding.previewImg.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     viewBinding.border.visibility = View.VISIBLE
-                    checkSimilarity.launch {
+                    viewBinding.lastImg.visibility = View.VISIBLE
+                    checkSimilarity = CoroutineScope(Dispatchers.Default).launch {
                         if (isActive) {
                             val shapeDrawable = ShapeDrawable().apply {
                                 shape = RectShape()
