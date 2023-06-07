@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.siriusproject.data.*
 import com.example.siriusproject.databinding.ActivityMainBinding
+import org.opencv.android.OpenCVLoader
 
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        OpenCVLoader.initDebug()
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         val newProjectActivity = Intent(this, NewProject::class.java)

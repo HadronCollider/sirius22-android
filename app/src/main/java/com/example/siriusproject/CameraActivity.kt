@@ -4,12 +4,17 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RectShape
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.Surface.*
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,11 +22,14 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
 import androidx.exifinterface.media.ExifInterface
 import com.example.siriusproject.Constants.MAX_COUNT_OF_IMAGES
 import com.example.siriusproject.Constants.qualityOfImages
+import com.example.siriusproject.data.ImageHash
 import com.example.siriusproject.databinding.ActivityCameraBinding
+import kotlinx.coroutines.*
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -40,6 +48,8 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var pathToDir: File
     private lateinit var allFilesDir: String
     private var nowCountOfImages = 0
+    private var lastImg: Bitmap? = null
+    private lateinit var checkSimilarity: Job
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -58,6 +68,7 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +78,68 @@ class CameraActivity : AppCompatActivity() {
         viewBinding.topAppBar.setNavigationOnClickListener {
             this.finish()
         }
+        viewBinding.lastImg.imageAlpha = 100
+
+
+        viewBinding.previewImg.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    viewBinding.border.visibility = View.VISIBLE
+                    viewBinding.lastImg.visibility = View.VISIBLE
+                    checkSimilarity = CoroutineScope(Dispatchers.Default).launch {
+                        if (isActive) {
+                            val shapeDrawable = ShapeDrawable().apply {
+                                shape = RectShape()
+                                paint.style = Paint.Style.STROKE
+                                paint.strokeWidth = 10F
+                            }
+                            while (isActive) {
+                                val redBorder = 0.4
+                                val yellowBorder = 0.6
+                                val (nowBitmap, lastBitmap) = withContext(Dispatchers.Main) {
+                                    if (viewBinding.lastImg.drawable != null) {
+                                        return@withContext Pair(
+                                            viewBinding.viewFinder.bitmap,
+                                            viewBinding.lastImg.drawable.toBitmap()
+                                        )
+                                    }
+                                    return@withContext Pair(null, null)
+                                }
+                                if (nowBitmap != null && lastBitmap != null) {
+                                    val similarity = ImageHash.calcPercentSimilarImagesByHash(
+                                        ImageHash.getPerceptualHash(nowBitmap),
+                                        ImageHash.getPerceptualHash(lastBitmap)
+                                    )
+                                    if (similarity <= redBorder) {
+                                        shapeDrawable.paint.color =
+                                            ContextCompat.getColor(this@CameraActivity, R.color.red)
+                                    } else if (similarity <= yellowBorder) {
+                                        shapeDrawable.paint.color = ContextCompat.getColor(
+                                            this@CameraActivity, R.color.yellow
+                                        )
+                                    } else {
+                                        shapeDrawable.paint.color = ContextCompat.getColor(
+                                            this@CameraActivity, R.color.green
+                                        )
+                                    }
+                                    withContext(Dispatchers.Main) {
+                                        viewBinding.border.background = shapeDrawable
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                MotionEvent.ACTION_UP -> {
+                    viewBinding.lastImg.visibility = View.GONE
+                    viewBinding.border.visibility = View.GONE
+                    checkSimilarity.cancel()
+                }
+            }
+            return@OnTouchListener true
+
+        })
+
 
         val arguments = intent.extras
         allFilesDir = arguments?.getString(this.getString(R.string.path_to_dir)).toString()
@@ -150,7 +223,7 @@ class CameraActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "CameraXApp"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-ss-SSS"
+        const val FILENAME_FORMAT = "yyyy-MM-dd-HH-ss-SSS"
     }
 
     override fun onRequestPermissionsResult(
@@ -180,10 +253,19 @@ class CameraActivity : AppCompatActivity() {
             else -> 0
         }
         var bitmap = BitmapFactory.decodeFile(image.path)
-
         val matrix = Matrix()
         matrix.postRotate(rotate.toFloat())
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+        if (lastImg != null) {
+            Log.d(
+                TAG, ImageHash.calcPercentSimilarImagesByHash(
+                    ImageHash.getPerceptualHash(lastImg!!), ImageHash.getPerceptualHash(bitmap)
+                ).toString()
+            )
+        }
+        lastImg = bitmap
+        viewBinding.lastImg.setImageBitmap(bitmap)
         var smallerBitmap = bitmap
         var file = image.path?.let { File(it) }
         var os = BufferedOutputStream(FileOutputStream(file))

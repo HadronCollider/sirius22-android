@@ -25,6 +25,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ProjectActivity : AppCompatActivity() {
@@ -190,7 +191,9 @@ class ProjectActivity : AppCompatActivity() {
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
                         bitmap = rotateImage(bitmap, selectedImage)
-                        val imageName = Calendar.getInstance().timeInMillis.toString() + ".jpeg"
+                        val imageName = SimpleDateFormat(
+                            CameraActivity.FILENAME_FORMAT, Locale.US
+                        ).format(System.currentTimeMillis()) + ".jpeg"
                         var file = File(
                             dirOfThisProject, imageName
                         )
